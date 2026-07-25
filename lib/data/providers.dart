@@ -1,10 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar_community/isar.dart';
 
+import '../core/utils/ids.dart';
 import '../domain/models/bank.dart';
 import '../domain/models/payment_card.dart';
+import '../domain/ocr/ocr_engine.dart';
+import '../domain/ocr/recognition_service.dart';
 import '../domain/repositories/repositories.dart';
 import 'local/isar_repositories.dart';
+import 'ocr/tesseract_ocr_engine.dart';
 import 'remote/category_dictionary_impl.dart';
 
 /// Открытая база. Подменяется в [main] после реального открытия и
@@ -110,4 +114,26 @@ final weightsProvider = FutureProvider<Map<String, double>>((ref) async {
 /// Справочник категорий.
 final categoriesProvider = FutureProvider((ref) {
   return ref.watch(categoryDictionaryProvider).all();
+});
+
+/// Движок распознавания. Подменяется в тестах и при смене платформы.
+final ocrEngineProvider = Provider<OcrEngine>((ref) {
+  final engine = TesseractOcrEngine();
+  ref.onDispose(engine.dispose);
+  return engine;
+});
+
+/// Распознавание скриншота в предложения банка.
+///
+/// Всё после движка — чистый Dart: разбор строк, сопоставление со
+/// словарём, оценка уверенности. Поэтому проверяется на расшифровках
+/// настоящих скриншотов, без устройства и без самого движка.
+final recognitionServiceProvider = FutureProvider<RecognitionService>((
+  ref,
+) async {
+  return RecognitionService(
+    engine: ref.watch(ocrEngineProvider),
+    categories: await ref.watch(categoriesProvider.future),
+    idGenerator: Ids.generate,
+  );
 });

@@ -25,6 +25,19 @@ dependencies:
   isar_community_flutter_libs: ^3.3.2
   path_provider: ^2.1.5
 
+  # Распознавание текста.
+  #
+  # ML Kit от Google распознаёт латиницу, китайский, деванагари, японский
+  # и корейский — кириллицы среди них нет, для русского приложения он
+  # не годится вовсе. Tesseract с русской моделью работает офлайн
+  # и кириллицу читает.
+  # Взят в репозиторий и починен: опубликованный пакет объявлял свой
+  # buildscript с AGP 8.2.1 и мёртвым jcenter, из-за чего проект
+  # не конфигурировался под AGP 9. Подробности в packages/tesseract_ocr.
+  tesseract_ocr:
+    path: packages/tesseract_ocr
+  image_picker: ^1.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -37,6 +50,10 @@ flutter:
 
   assets:
     - assets/categories.json
+    - assets/tessdata_config.json
+    # Модели Tesseract. Быстрый набор: русская 3,7 МБ, английская 1,9 МБ —
+    # английская нужна для названий магазинов вроде Lamoda и zolla.
+    - assets/tessdata/
 
   fonts:
     - family: Golos Text

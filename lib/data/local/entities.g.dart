@@ -2132,14 +2132,15 @@ const OfferEntitySchema = CollectionSchema(
       name: r'monthKey',
       type: IsarType.string,
     ),
-    r'rate': PropertySchema(id: 4, name: r'rate', type: IsarType.double),
+    r'note': PropertySchema(id: 4, name: r'note', type: IsarType.string),
+    r'rate': PropertySchema(id: 5, name: r'rate', type: IsarType.double),
     r'source': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'source',
       type: IsarType.byte,
       enumMap: _OfferEntitysourceEnumValueMap,
     ),
-    r'uid': PropertySchema(id: 6, name: r'uid', type: IsarType.string),
+    r'uid': PropertySchema(id: 7, name: r'uid', type: IsarType.string),
   },
 
   estimateSize: _offerEntityEstimateSize,
@@ -2198,6 +2199,12 @@ int _offerEntityEstimateSize(
   bytesCount += 3 + object.cardId.length * 3;
   bytesCount += 3 + object.categoryId.length * 3;
   bytesCount += 3 + object.monthKey.length * 3;
+  {
+    final value = object.note;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.uid.length * 3;
   return bytesCount;
 }
@@ -2212,9 +2219,10 @@ void _offerEntitySerialize(
   writer.writeString(offsets[1], object.categoryId);
   writer.writeDouble(offsets[2], object.confidence);
   writer.writeString(offsets[3], object.monthKey);
-  writer.writeDouble(offsets[4], object.rate);
-  writer.writeByte(offsets[5], object.source.index);
-  writer.writeString(offsets[6], object.uid);
+  writer.writeString(offsets[4], object.note);
+  writer.writeDouble(offsets[5], object.rate);
+  writer.writeByte(offsets[6], object.source.index);
+  writer.writeString(offsets[7], object.uid);
 }
 
 OfferEntity _offerEntityDeserialize(
@@ -2229,11 +2237,12 @@ OfferEntity _offerEntityDeserialize(
   object.confidence = reader.readDouble(offsets[2]);
   object.id = id;
   object.monthKey = reader.readString(offsets[3]);
-  object.rate = reader.readDouble(offsets[4]);
+  object.note = reader.readStringOrNull(offsets[4]);
+  object.rate = reader.readDouble(offsets[5]);
   object.source =
-      _OfferEntitysourceValueEnumMap[reader.readByteOrNull(offsets[5])] ??
+      _OfferEntitysourceValueEnumMap[reader.readByteOrNull(offsets[6])] ??
       OfferSource.ocr;
-  object.uid = reader.readString(offsets[6]);
+  object.uid = reader.readString(offsets[7]);
   return object;
 }
 
@@ -2253,12 +2262,14 @@ P _offerEntityDeserializeProp<P>(
     case 3:
       return (reader.readString(offset)) as P;
     case 4:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
+      return (reader.readDouble(offset)) as P;
+    case 6:
       return (_OfferEntitysourceValueEnumMap[reader.readByteOrNull(offset)] ??
               OfferSource.ocr)
           as P;
-    case 6:
+    case 7:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -3155,6 +3166,170 @@ extension OfferEntityQueryFilter
     });
   }
 
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'note'),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition>
+  noteIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'note'),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'note',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteContains(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'note',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteMatches(
+    String pattern, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'note',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> noteIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'note', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition>
+  noteIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'note', value: ''),
+      );
+    });
+  }
+
   QueryBuilder<OfferEntity, OfferEntity, QAfterFilterCondition> rateEqualTo(
     double value, {
     double epsilon = Query.epsilon,
@@ -3490,6 +3665,18 @@ extension OfferEntityQuerySortBy
     });
   }
 
+  QueryBuilder<OfferEntity, OfferEntity, QAfterSortBy> sortByNote() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'note', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterSortBy> sortByNoteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'note', Sort.desc);
+    });
+  }
+
   QueryBuilder<OfferEntity, OfferEntity, QAfterSortBy> sortByRate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rate', Sort.asc);
@@ -3589,6 +3776,18 @@ extension OfferEntityQuerySortThenBy
     });
   }
 
+  QueryBuilder<OfferEntity, OfferEntity, QAfterSortBy> thenByNote() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'note', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OfferEntity, OfferEntity, QAfterSortBy> thenByNoteDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'note', Sort.desc);
+    });
+  }
+
   QueryBuilder<OfferEntity, OfferEntity, QAfterSortBy> thenByRate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'rate', Sort.asc);
@@ -3658,6 +3857,14 @@ extension OfferEntityQueryWhereDistinct
     });
   }
 
+  QueryBuilder<OfferEntity, OfferEntity, QDistinct> distinctByNote({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'note', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<OfferEntity, OfferEntity, QDistinct> distinctByRate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'rate');
@@ -3708,6 +3915,12 @@ extension OfferEntityQueryProperty
   QueryBuilder<OfferEntity, String, QQueryOperations> monthKeyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'monthKey');
+    });
+  }
+
+  QueryBuilder<OfferEntity, String?, QQueryOperations> noteProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'note');
     });
   }
 

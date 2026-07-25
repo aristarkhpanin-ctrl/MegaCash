@@ -87,6 +87,8 @@ class OfferEntity {
 
   late double confidence;
 
+  String? note;
+
   MonthlyOffer toDomain() => MonthlyOffer(
         id: uid,
         cardId: cardId,
@@ -95,6 +97,7 @@ class OfferEntity {
         rate: rate,
         source: source,
         confidence: confidence,
+        note: note,
       );
 
   static OfferEntity fromDomain(MonthlyOffer o) => OfferEntity()
@@ -104,7 +107,8 @@ class OfferEntity {
     ..categoryId = o.categoryId
     ..rate = o.rate
     ..source = o.source
-    ..confidence = o.confidence;
+    ..confidence = o.confidence
+    ..note = o.note;
 }
 
 @collection

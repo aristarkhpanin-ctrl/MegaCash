@@ -2,6 +2,11 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // Нативная часть Tesseract (cz.adaptech.tesseract4android) публикуется
+        // только здесь — в Maven Central её нет. Опубликованный плагин
+        // прописывал этот репозиторий сам, залезая в корневой проект;
+        // правильнее объявить его тут, у приложения.
+        maven { url = uri("https://jitpack.io") }
     }
 }
 

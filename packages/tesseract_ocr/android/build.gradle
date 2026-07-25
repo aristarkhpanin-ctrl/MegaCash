@@ -1,0 +1,38 @@
+// Сборка приведена к современному Android Gradle Plugin.
+//
+// Опубликованный пакет объявлял собственный buildscript с AGP 8.2.1 и
+// мёртвым jcenter, использовал compileSdkVersion, lintOptions
+// и packagingOptions — всё это убрано в AGP 9, и проект просто не
+// конфигурировался. Нативная часть тянется из Maven, поэтому пересобирать
+// её не требуется: достаточно исправить описание сборки.
+
+plugins {
+    id 'com.android.library'
+}
+
+group 'io.paratoner.tesseract_ocr'
+version '1.0'
+
+android {
+    namespace 'io.paratoner.tesseract_ocr'
+    compileSdk 35
+
+    defaultConfig {
+        // Шестнадцатый API современный AGP не принимает, да и Flutter
+        // давно требует выше.
+        minSdk 24
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        disable 'InvalidPackage'
+    }
+}
+
+dependencies {
+    implementation 'cz.adaptech.tesseract4android:tesseract4android:4.8.0'
+}

@@ -22,6 +22,7 @@ class MonthlyOffer {
     required this.rate,
     required this.source,
     this.confidence = 1,
+    this.note,
   });
 
   final String id;
@@ -41,6 +42,11 @@ class MonthlyOffer {
   /// Ниже 0.7 предложение показывается пользователю на проверку.
   final double confidence;
 
+  /// Условие банка: «Зарплатным клиентам», «С Альфа-Смарт», «Только
+  /// в приложении». Под таким условием предложение может быть человеку
+  /// недоступно, и решать это должен он, а не приложение.
+  final String? note;
+
   /// Порог, ниже которого распознанное не принимается на веру.
   static const double confidenceThreshold = 0.7;
 
@@ -55,6 +61,7 @@ class MonthlyOffer {
     double? rate,
     OfferSource? source,
     double? confidence,
+    String? note,
   }) =>
       MonthlyOffer(
         id: id ?? this.id,
@@ -64,6 +71,7 @@ class MonthlyOffer {
         rate: rate ?? this.rate,
         source: source ?? this.source,
         confidence: confidence ?? this.confidence,
+        note: note ?? this.note,
       );
 
   @override
