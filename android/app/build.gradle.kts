@@ -20,6 +20,17 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+    }
+
+    // Нативные библиотеки сторонних плагинов приходят сразу под все
+    // архитектуры: флаг --target-platform фильтрует только библиотеки
+    // Flutter. Без этого в APK ехали x86_64 и armeabi-v7a сборки
+    // Tesseract — двенадцать мегабайт, бесполезных на телефоне.
+    packaging {
+        jniLibs {
+            excludes += listOf("lib/x86_64/**", "lib/armeabi-v7a/**")
+        }
     }
 
     buildTypes {
