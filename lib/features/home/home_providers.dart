@@ -45,7 +45,7 @@ final activeCategoriesProvider =
   if (selections.isEmpty) return const [];
 
   final offers = await offerRepo.forMonth(monthKey);
-  final categories = await ref.watch(categoriesProvider.future);
+  final categories = ref.watch(categoriesProvider);
   final weights = await ref.watch(weightsProvider.future);
 
   final categoryById = {for (final c in categories) c.id: c};
@@ -127,7 +127,7 @@ final paymentAnswerProvider =
   final offerRepo = ref.watch(offerRepositoryProvider);
 
   final cards = await ref.watch(cardsProvider.future);
-  final categories = await ref.watch(categoriesProvider.future);
+  final categories = ref.watch(categoriesProvider);
 
   final banksById = <String, Bank>{
     for (final c in cards) c.card.bankId: c.bank,

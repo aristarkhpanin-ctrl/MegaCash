@@ -401,7 +401,7 @@ class _CategoryChips extends ConsumerWidget {
     final offers = ref.watch(cardOffersProvider(cardId)).value ?? const [];
     final selected =
         ref.watch(cardSelectionsProvider(cardId)).value ?? const <String>{};
-    final categories = ref.watch(categoriesProvider).value ?? const [];
+    final categories = ref.watch(categoriesProvider);
 
     final nameById = {for (final cat in categories) cat.id: cat.name};
     final full = selected.length >= slotLimit;

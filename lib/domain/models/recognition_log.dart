@@ -25,6 +25,23 @@ class RecognitionLog {
   /// Строки, не найденные в словаре синонимов.
   final List<String> unmatchedStrings;
 
+  /// Собирает запись журнала. Идентификатор и время подставляются здесь,
+  /// чтобы вызывающему коду не приходилось думать о них.
+  static RecognitionLog build({
+    required String id,
+    required String rawText,
+    required int foundCount,
+    required List<String> unmatched,
+    DateTime? at,
+  }) =>
+      RecognitionLog(
+        id: id,
+        at: at ?? DateTime.now(),
+        rawText: rawText,
+        foundCount: foundCount,
+        unmatchedStrings: unmatched,
+      );
+
   @override
   String toString() =>
       'RecognitionLog($at, найдено $foundCount, не опознано '

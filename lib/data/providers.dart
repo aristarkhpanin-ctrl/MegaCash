@@ -3,6 +3,7 @@ import 'package:isar_community/isar.dart';
 
 import '../core/utils/ids.dart';
 import '../domain/models/bank.dart';
+import '../domain/models/category.dart';
 import '../domain/models/payment_card.dart';
 import '../domain/ocr/ocr_engine.dart';
 import '../domain/ocr/recognition_service.dart';
@@ -112,8 +113,15 @@ final weightsProvider = FutureProvider<Map<String, double>>((ref) async {
 });
 
 /// Справочник категорий.
-final categoriesProvider = FutureProvider((ref) {
-  return ref.watch(categoryDictionaryProvider).all();
+///
+/// Загружается один раз при старте приложения и дальше доступен сразу,
+/// как база. Асинхронное чтение на каждом экране означало бы, что любой
+/// экран должен уметь показывать себя без категорий — а показывать ему
+/// в этот момент нечего.
+final categoriesProvider = Provider<List<Category>>((ref) {
+  throw UnimplementedError(
+    'categoriesProvider должен быть переопределён в ProviderScope',
+  );
 });
 
 /// Движок распознавания. Подменяется в тестах и при смене платформы.
@@ -128,12 +136,10 @@ final ocrEngineProvider = Provider<OcrEngine>((ref) {
 /// Всё после движка — чистый Dart: разбор строк, сопоставление со
 /// словарём, оценка уверенности. Поэтому проверяется на расшифровках
 /// настоящих скриншотов, без устройства и без самого движка.
-final recognitionServiceProvider = FutureProvider<RecognitionService>((
-  ref,
-) async {
+final recognitionServiceProvider = Provider<RecognitionService>((ref) {
   return RecognitionService(
     engine: ref.watch(ocrEngineProvider),
-    categories: await ref.watch(categoriesProvider.future),
+    categories: ref.watch(categoriesProvider),
     idGenerator: Ids.generate,
   );
 });

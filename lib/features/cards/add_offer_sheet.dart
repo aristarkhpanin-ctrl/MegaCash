@@ -55,7 +55,7 @@ class _AddOfferSheetState extends ConsumerState<_AddOfferSheet> {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final categories = ref.watch(categoriesProvider).value ?? const [];
+    final categories = ref.watch(categoriesProvider);
     final taken = ref.watch(cardOffersProvider(widget.cardId)).value ?? const [];
     final takenIds = taken.map((o) => o.categoryId).toSet();
 

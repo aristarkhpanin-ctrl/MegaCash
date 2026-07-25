@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app.dart';
 import 'data/local/isar_database.dart';
 import 'data/providers.dart';
+import 'data/remote/category_dictionary_impl.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,10 +17,14 @@ Future<void> main() async {
   ]);
 
   final isar = await IsarDatabase.open();
+  final categories = await BundledCategoryDictionary().all();
 
   runApp(
     ProviderScope(
-      overrides: [isarProvider.overrideWithValue(isar)],
+      overrides: [
+        isarProvider.overrideWithValue(isar),
+        categoriesProvider.overrideWithValue(categories),
+      ],
       child: const MegaCashApp(),
     ),
   );

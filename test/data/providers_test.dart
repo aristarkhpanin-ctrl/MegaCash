@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:isar_community/isar.dart';
 import 'package:megacash/data/local/isar_database.dart';
 import 'package:megacash/data/providers.dart';
+import 'package:megacash/data/remote/category_dictionary_impl.dart';
 import 'package:megacash/domain/models/bank.dart';
 import 'package:megacash/domain/models/payment_card.dart';
 import 'package:megacash/domain/models/selection.dart';
@@ -32,7 +33,12 @@ void main() {
       instanceName: 'providers_${counter++}',
     );
     container = ProviderContainer(
-      overrides: [isarProvider.overrideWithValue(isar)],
+      overrides: [
+        isarProvider.overrideWithValue(isar),
+        categoriesProvider.overrideWithValue(
+          await BundledCategoryDictionary().all(),
+        ),
+      ],
     );
   });
 

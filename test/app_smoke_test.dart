@@ -8,9 +8,12 @@ import 'package:megacash/app.dart';
 import 'package:megacash/core/theme/app_colors.dart';
 import 'package:megacash/data/local/isar_database.dart';
 import 'package:megacash/data/providers.dart';
+import 'package:megacash/data/remote/category_dictionary_impl.dart';
+import 'package:megacash/domain/models/category.dart';
 import 'package:megacash/features/cards/cards_screen.dart';
 import 'package:megacash/features/home/answer_screen.dart';
 import 'package:megacash/features/home/home_screen.dart';
+import 'package:megacash/features/setup/manual_category_screen.dart';
 
 void main() {
   late Directory dir;
@@ -23,8 +26,12 @@ void main() {
   // другу они не могут, а каталоги убираются в самом конце.
   final dirs = <Directory>[];
 
+  late List<Category> categories;
+
   setUpAll(() async {
     await Isar.initializeIsarCore(download: true);
+    // Справочник загружается один раз при старте — и в приложении, и здесь.
+    categories = await BundledCategoryDictionary().all();
   });
 
   setUp(() async {
@@ -67,7 +74,9 @@ void main() {
   /// Экраны читают данные из базы и до первого ответа показывают пустоту,
   /// поэтому нажимать сразу после перехода нельзя — цели ещё нет.
   Future<void> waitFor(WidgetTester tester, Finder finder) async {
-    for (var attempt = 0; attempt < 6; attempt++) {
+    // Запас намеренно большой: экраны настройки читают справочник, веса
+    // и базу, и на медленной машине цепочка занимает заметно дольше.
+    for (var attempt = 0; attempt < 12; attempt++) {
       if (finder.evaluate().isNotEmpty) return;
       await settle(tester);
     }
@@ -102,7 +111,10 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [isarProvider.overrideWithValue(isar)],
+        overrides: [
+          isarProvider.overrideWithValue(isar),
+          categoriesProvider.overrideWithValue(categories),
+        ],
         child: const MegaCashApp(),
       ),
     );
@@ -125,6 +137,10 @@ void main() {
       find.descendant(of: find.byType(HomeScreen), matching: what);
   Finder inAnswer(Finder what) =>
       find.descendant(of: find.byType(AnswerScreen), matching: what);
+  Finder inManual(Finder what) => find.descendant(
+        of: find.byType(ManualCategoryScreen),
+        matching: what,
+      );
 
   /// Добавляет карту через интерфейс: банк из списка, продукт, базовый.
   Future<void> addCard(
@@ -270,17 +286,27 @@ void main() {
     await tapAndWait(tester, find.text('Кэшбэк'));
 
     await tapAndWait(tester, inHome(find.text('Настроить кэшбэк')));
+    expect(find.textContaining('Настройка на'), findsOneWidget);
 
-    for (final label in const [
-      'Загрузить скриншоты (Б2)',
-      'Распознать (Б3)',
-      'Проверить распознанное (Б4)',
-      'Продолжить (Б6)',
-      'Перейти к активации (Б7)',
-      'Всё включил (Б8)',
-    ]) {
-      await tapAndWait(tester, find.text(label));
-    }
+    await tapAndWait(tester, find.text('Загрузить скриншоты'));
+
+    // Скриншоты в тесте подсунуть некуда, поэтому идём ручным вводом —
+    // это полноценный путь, а не запасной.
+    await tapAndWait(tester, find.text('Ввести категории вручную'));
+    // Экран под открытым остаётся в дереве, поэтому ищем внутри нужного.
+    await tapAndWait(tester, inManual(find.text('Т-Банк')));
+    await tapAndWait(tester, inManual(find.text('Супермаркеты')));
+    await tapAndWait(tester, inManual(find.text('Добавить')));
+
+    await tapAndWait(tester, find.text('Продолжить без скриншотов'));
+
+    // Рекомендация: категория попала в выбранные.
+    await waitFor(tester, find.text('Выбранные'));
+    expect(find.text('Выбранные'), findsOneWidget);
+    expect(find.text('Супермаркеты'), findsOneWidget);
+
+    await tapAndWait(tester, find.text('Перейти к активации'));
+    await tapAndWait(tester, find.text('Всё включил'));
 
     expect(find.text('Кэшбэк на месяц собран'), findsOneWidget);
   });
