@@ -397,7 +397,9 @@ class _FirstCardScreenState extends ConsumerState<FirstCardScreen> {
         );
 
     if (!mounted) return;
-    ref.invalidate(cardsProvider);
+    // Список карт не пересобираем вручную: он живёт на потоке Isar и
+    // обновится сам. Инвалидация прямо перед закрытием экрана роняла бы
+    // обновление в середину сборки кадра перехода.
     context.pop();
   }
 

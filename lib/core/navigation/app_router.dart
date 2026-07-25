@@ -65,7 +65,9 @@ GoRouter createRouter() {
       GoRoute(
         parentNavigatorKey: _rootKey,
         path: Routes.answer,
-        builder: (context, state) => const AnswerScreen(),
+        builder: (context, state) => AnswerScreen(
+          categoryId: state.uri.queryParameters['category'] ?? '',
+        ),
       ),
       GoRoute(
         parentNavigatorKey: _rootKey,

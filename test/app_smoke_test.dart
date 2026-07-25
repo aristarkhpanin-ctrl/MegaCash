@@ -8,6 +8,9 @@ import 'package:megacash/app.dart';
 import 'package:megacash/core/theme/app_colors.dart';
 import 'package:megacash/data/local/isar_database.dart';
 import 'package:megacash/data/providers.dart';
+import 'package:megacash/features/cards/cards_screen.dart';
+import 'package:megacash/features/home/answer_screen.dart';
+import 'package:megacash/features/home/home_screen.dart';
 
 void main() {
   late Directory dir;
@@ -59,7 +62,29 @@ void main() {
   /// Обычный `tap` запускает обработчик в поддельной асинхронной зоне
   /// теста, где `await` на операциях Isar не разрешается никогда. Внутри
   /// `runAsync` обработчик выполняется в настоящей зоне и доходит до конца.
+  /// Ждёт появления виджета, прокачивая кадры.
+  ///
+  /// Экраны читают данные из базы и до первого ответа показывают пустоту,
+  /// поэтому нажимать сразу после перехода нельзя — цели ещё нет.
+  Future<void> waitFor(WidgetTester tester, Finder finder) async {
+    for (var attempt = 0; attempt < 6; attempt++) {
+      if (finder.evaluate().isNotEmpty) return;
+      await settle(tester);
+    }
+  }
+
   Future<void> tapAndWait(WidgetTester tester, Finder finder) async {
+    await waitFor(tester, finder);
+
+    // Цель может быть ниже видимой области: нажатие по координатам за
+    // краем экрана просто не попадёт по кнопке и ничего не произойдёт.
+    try {
+      await tester.ensureVisible(finder);
+      await tester.pump();
+    } on Object {
+      // Виджет не внутри прокручиваемой области — нажимаем как есть.
+    }
+
     await tester.runAsync(() async {
       await tester.tap(finder);
       await Future<void>.delayed(const Duration(milliseconds: 300));
@@ -68,6 +93,13 @@ void main() {
   }
 
   Future<void> pumpApp(WidgetTester tester) async {
+    // Тот же размер, в котором нарисованы макеты. По умолчанию тестовое
+    // окно 800×600 — экраны в нём раскладываются не так, как на телефоне.
+    tester.view.physicalSize = const Size(360, 780);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [isarProvider.overrideWithValue(isar)],
@@ -85,11 +117,51 @@ void main() {
     await settle(tester);
   }
 
+  /// Оба раздела нижней навигации живут в дереве одновременно, поэтому
+  /// один и тот же текст находится дважды. Ищем внутри нужного экрана.
+  Finder inCards(Finder what) =>
+      find.descendant(of: find.byType(CardsScreen), matching: what);
+  Finder inHome(Finder what) =>
+      find.descendant(of: find.byType(HomeScreen), matching: what);
+  Finder inAnswer(Finder what) =>
+      find.descendant(of: find.byType(AnswerScreen), matching: what);
+
+  /// Добавляет карту через интерфейс: банк из списка, продукт, базовый.
+  Future<void> addCard(
+    WidgetTester tester, {
+    required String bank,
+    required String product,
+    String baseRate = '1',
+  }) async {
+    await tapAndWait(tester, find.text('Карты'));
+    // Кнопка «Добавить карту» есть и в пустом состоянии, и в конце списка.
+    await tapAndWait(tester, inCards(find.text('Добавить карту')));
+
+    await tapAndWait(tester, find.text(bank));
+
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Например, Black'),
+      product,
+    );
+    await settle(tester);
+
+    final rateField = find.byType(TextField).at(1);
+    await tester.enterText(rateField, baseRate);
+    await settle(tester);
+
+    await tapAndWait(tester, find.text('Сохранить карту'));
+    // Список едет из потока Isar — он приходит из нативного кода своим
+    // темпом, поэтому после возврата даём ему дойти.
+    await settle(tester);
+    await settle(tester);
+  }
+
   testWidgets('Приложение открывается на главном экране', (tester) async {
     await pumpApp(tester);
 
-    expect(find.text('Главный экран'), findsOneWidget);
-    // Нижняя навигация на два раздела.
+    // Карт нет — главный предлагает добавить первую.
+    expect(find.text('Добавьте первую карту'), findsOneWidget);
+    expect(find.text('Нет карт'), findsOneWidget);
     expect(find.text('Кэшбэк'), findsOneWidget);
     expect(find.text('Карты'), findsOneWidget);
   });
@@ -97,35 +169,107 @@ void main() {
   testWidgets('Разделы нижней навигации переключаются', (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.text('Карты'));
-    await settle(tester);
-    // Карт ещё нет — показано пустое состояние.
+    await tapAndWait(tester, find.text('Карты'));
     expect(find.text('Мои карты'), findsOneWidget);
     expect(find.text('Пока нет карт'), findsOneWidget);
 
-    await tester.tap(find.text('Кэшбэк'));
-    await settle(tester);
-    expect(find.text('Главный экран'), findsOneWidget);
+    await tapAndWait(tester, find.text('Кэшбэк'));
+    expect(inHome(find.text('Добавьте первую карту')), findsOneWidget);
   });
 
-  testWidgets('С главного открывается ответ и возвращается назад',
+  testWidgets('Тема переключается на тёмную и обратно', (tester) async {
+    await pumpApp(tester);
+
+    await tapAndWait(tester, find.byTooltip('Настройки'));
+
+    Color scaffoldBg() {
+      final ctx = tester.element(find.text('Тёмная').first);
+      return Theme.of(ctx).scaffoldBackgroundColor;
+    }
+
+    await tapAndWait(tester, find.text('Тёмная'));
+    expect(scaffoldBg(), AppColors.dark.bg);
+
+    await tapAndWait(tester, find.text('Светлая'));
+    expect(scaffoldBg(), AppColors.light.bg);
+  });
+
+  testWidgets('Карта добавляется руками и появляется в списке',
+      (tester) async {
+    await pumpApp(tester);
+    await addCard(tester, bank: 'Т-Банк', product: 'Black');
+
+    expect(inCards(find.text('Т-Банк')), findsOneWidget);
+    expect(find.text('1 карта'), findsOneWidget);
+    expect(
+      find.textContaining('Black · базовый 1% · 0 категорий'),
+      findsOneWidget,
+    );
+  });
+
+  /// Полный путь ежедневного использования: завести карты, назначить
+  /// категорию руками, получить ответ у кассы.
+  testWidgets('Категория назначается руками, ответ показывает нужную карту',
       (tester) async {
     await pumpApp(tester);
 
-    await tester.tap(find.text('Открыть ответ (А2)'));
-    await settle(tester);
-    expect(find.text('Какой картой платить'), findsWidgets);
+    await addCard(tester, bank: 'Т-Банк', product: 'Black');
+    await addCard(tester, bank: 'Сбербанк', product: 'СберКарта');
 
-    await tester.pageBack();
+    // Заводим предложение банка и выбираем категорию.
+    await tapAndWait(tester, inCards(find.text('Т-Банк')));
+    await tapAndWait(tester, find.text('Добавить категорию'));
+    await tapAndWait(tester, find.text('Супермаркеты'));
+
+    await tester.enterText(find.byType(TextField).last, '7');
     await settle(tester);
-    expect(find.text('Главный экран'), findsOneWidget);
+    await tapAndWait(tester, find.text('Добавить'));
+
+    // Чип появился, отмечаем его.
+    await waitFor(tester, find.text('Супермаркеты'));
+    expect(find.text('Супермаркеты'), findsOneWidget);
+    expect(find.text('Выбрано 0 из 3'), findsOneWidget);
+
+    await tapAndWait(tester, find.text('Супермаркеты'));
+    expect(find.text('Выбрано 1 из 3'), findsOneWidget);
+
+    // Возвращаемся на главный: категория стала плиткой.
+    await tapAndWait(tester, find.byTooltip('Back'));
+    await tapAndWait(tester, find.text('Кэшбэк'));
+
+    await waitFor(tester, inHome(find.text('Супермаркеты')));
+    expect(inHome(find.text('Супермаркеты')), findsOneWidget);
+    expect(inHome(find.text('7%')), findsOneWidget);
+    expect(find.text('1 активная категория'), findsOneWidget);
+
+    // Ответ у кассы: платить Т-Банком под 7%, Сбербанк ниже с базовым 1%.
+    await tapAndWait(tester, inHome(find.text('Супермаркеты')));
+
+    await waitFor(tester, inAnswer(find.text('ПЛАТИТЕ ЭТОЙ')));
+    expect(inAnswer(find.text('ЧЕМ ПЛАТИТЬ')), findsOneWidget);
+    expect(inAnswer(find.text('ПЛАТИТЕ ЭТОЙ')), findsOneWidget);
+    expect(inAnswer(find.text('Т-Банк')), findsOneWidget);
+    expect(inAnswer(find.text('7%')), findsOneWidget);
+
+    // Проигравшие ниже по экрану — прокручиваем к ним.
+    await tester.scrollUntilVisible(
+      inAnswer(find.text('Сбербанк')),
+      120,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await settle(tester);
+
+    expect(inAnswer(find.text('ОСТАЛЬНЫЕ КАРТЫ')), findsOneWidget);
+    expect(inAnswer(find.text('Сбербанк')), findsOneWidget);
+    expect(inAnswer(find.text('1%')), findsOneWidget);
   });
 
   testWidgets('Проходится вся месячная настройка Б1 → Б8', (tester) async {
     await pumpApp(tester);
+    await addCard(tester, bank: 'Т-Банк', product: 'Black');
+    await tapAndWait(tester, find.text('Кэшбэк'));
 
-    await tester.tap(find.text('Настроить кэшбэк на месяц (Б1)'));
-    await settle(tester);
+    await tapAndWait(tester, inHome(find.text('Настроить кэшбэк')));
 
     for (final label in const [
       'Загрузить скриншоты (Б2)',
@@ -135,68 +279,9 @@ void main() {
       'Перейти к активации (Б7)',
       'Всё включил (Б8)',
     ]) {
-      await tester.tap(find.text(label));
-      await settle(tester);
+      await tapAndWait(tester, find.text(label));
     }
 
     expect(find.text('Кэшбэк на месяц собран'), findsOneWidget);
-  });
-
-  testWidgets('Тема переключается на тёмную и обратно', (tester) async {
-    await pumpApp(tester);
-
-    await tester.tap(find.byTooltip('Настройки'));
-    await settle(tester);
-
-    Color scaffoldBg() {
-      final ctx = tester.element(find.text('Тёмная').first);
-      return Theme.of(ctx).scaffoldBackgroundColor;
-    }
-
-    await tester.tap(find.text('Тёмная'));
-    await settle(tester);
-    expect(scaffoldBg(), AppColors.dark.bg);
-
-    await tester.tap(find.text('Светлая'));
-    await settle(tester);
-    expect(scaffoldBg(), AppColors.light.bg);
-  });
-
-  testWidgets('Карта добавляется руками и появляется в списке',
-      (tester) async {
-    await pumpApp(tester);
-
-    await tester.tap(find.text('Карты'));
-    await settle(tester);
-
-    await tester.tap(find.text('Добавить карту'));
-    await settle(tester);
-
-    // Шаг 1 — банк из списка.
-    expect(find.text('Выберите банк'), findsOneWidget);
-    await tester.tap(find.text('Т-Банк'));
-    await settle(tester);
-
-    // Шаг 2 — продукт и базовый процент.
-    expect(find.text('Шаг 2 из 2'), findsOneWidget);
-    await tester.enterText(
-      find.widgetWithText(TextField, 'Например, Black'),
-      'Black',
-    );
-    await settle(tester);
-
-    await tapAndWait(tester, find.text('Сохранить карту'));
-    // Список едет из потока Isar — он приходит из нативного кода и своим
-    // темпом, поэтому после возврата на экран даём ему ещё дойти.
-    await settle(tester);
-    await settle(tester);
-
-    expect(find.text('Т-Банк'), findsOneWidget);
-    expect(find.text('1 карта'), findsOneWidget);
-    // Строка карты собирает продукт, базовый процент и число категорий.
-    expect(
-      find.textContaining('Black · базовый 1% · 0 категорий'),
-      findsOneWidget,
-    );
   });
 }

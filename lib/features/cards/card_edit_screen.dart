@@ -8,14 +8,18 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_typography.dart';
+import '../../core/utils/ids.dart';
+import '../../core/widgets/mc_chip.dart';
 import '../../data/providers.dart';
 import '../../domain/models/payment_card.dart';
+import '../../domain/models/selection.dart';
+import '../home/home_providers.dart';
+import 'add_offer_sheet.dart';
 
 /// А4 · Карточка банка — редактирование.
 ///
-/// Название банка и продукта, базовый процент, лимит категорий и удаление
-/// карты. Список доступных категорий чипами появится на шаге 4, когда
-/// будут предложения на месяц.
+/// Название банка и продукта, базовый процент, лимит категорий, чипы
+/// доступных категорий с отметкой выбранных и удаление карты.
 class CardEditScreen extends ConsumerStatefulWidget {
   const CardEditScreen({super.key, required this.cardId});
 
@@ -258,6 +262,8 @@ class _CardEditScreenState extends ConsumerState<CardEditScreen> {
               ],
             ),
             const SizedBox(height: Spacing.x8),
+            _CategoryChips(cardId: widget.cardId, slotLimit: _slotLimit),
+            const SizedBox(height: Spacing.x8),
             OutlinedButton.icon(
               onPressed: _confirmDelete,
               icon: const Icon(Icons.delete_outline, size: 18),
@@ -296,7 +302,9 @@ class _CardEditScreenState extends ConsumerState<CardEditScreen> {
         );
 
     if (!mounted) return;
-    ref.invalidate(cardsProvider);
+    // Список карт не пересобираем вручную: он живёт на потоке Isar и
+    // обновится сам. Инвалидация прямо перед закрытием экрана роняла бы
+    // обновление в середину сборки кадра перехода.
     context.pop();
   }
 
@@ -328,7 +336,9 @@ class _CardEditScreenState extends ConsumerState<CardEditScreen> {
 
     await ref.read(cardRepositoryProvider).delete(widget.cardId);
     if (!mounted) return;
-    ref.invalidate(cardsProvider);
+    // Список карт не пересобираем вручную: он живёт на потоке Isar и
+    // обновится сам. Инвалидация прямо перед закрытием экрана роняла бы
+    // обновление в середину сборки кадра перехода.
     context.pop();
   }
 }
@@ -371,5 +381,144 @@ class _Step extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Категории кэшбэка этой карты.
+///
+/// Чипы показывают предложения банка на текущий месяц. Отмеченные —
+/// выбранные категории. Когда лимит выбран, остальные чипы гаснут:
+/// банк всё равно не даст включить больше.
+class _CategoryChips extends ConsumerWidget {
+  const _CategoryChips({required this.cardId, required this.slotLimit});
+
+  final String cardId;
+  final int slotLimit;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final c = context.colors;
+    final offers = ref.watch(cardOffersProvider(cardId)).value ?? const [];
+    final selected =
+        ref.watch(cardSelectionsProvider(cardId)).value ?? const <String>{};
+    final categories = ref.watch(categoriesProvider).value ?? const [];
+
+    final nameById = {for (final cat in categories) cat.id: cat.name};
+    final full = selected.length >= slotLimit;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Категории кэшбэка',
+                style: AppText.bodyStrong.copyWith(color: c.text),
+              ),
+            ),
+            Text(
+              'Выбрано ${selected.length} из $slotLimit',
+              style: AppText.label.copyWith(
+                color: full ? c.textSecondary : c.text,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: Spacing.x2 - 2),
+        Text(
+          offers.isEmpty
+              ? 'Предложений банка на этот месяц пока нет. Добавьте их '
+                  'вручную или загрузите скриншоты.'
+              : full
+                  ? 'Лимит выбран. Чтобы включить другую категорию, '
+                      'снимите одну из выбранных.'
+                  : 'Отметьте категории с повышенным кэшбэком. '
+                      'Можно выбрать до $slotLimit.',
+          style: AppText.label.copyWith(
+            color: c.textSecondary,
+            height: 1.4,
+          ),
+        ),
+        const SizedBox(height: Spacing.x3 + 2),
+        if (offers.isNotEmpty)
+          Wrap(
+            spacing: Spacing.x2,
+            runSpacing: Spacing.x2,
+            children: [
+              for (final offer in offers)
+                McChip(
+                  label: nameById[offer.categoryId] ?? offer.categoryId,
+                  percent: offer.rate,
+                  state: selected.contains(offer.categoryId)
+                      ? ChipState.selected
+                      : full
+                          ? ChipState.disabled
+                          : ChipState.unselected,
+                  onTap: () => _toggle(
+                    ref,
+                    offer.categoryId,
+                    selected.contains(offer.categoryId),
+                  ),
+                ),
+            ],
+          ),
+        const SizedBox(height: Spacing.x3 + 2),
+        OutlinedButton.icon(
+          onPressed: () async {
+            final added = await showAddOfferSheet(context, cardId: cardId);
+            if (added) {
+              ref.invalidate(cardOffersProvider(cardId));
+            }
+          },
+          icon: const Icon(Icons.add, size: 18),
+          label: const Text('Добавить категорию'),
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size(double.infinity, Dimens.minTapTarget),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Снять отметку можно всегда, поставить — только пока есть свободный слот.
+  ///
+  /// Выбор сохраняется со статусом userChosen: это решение человека,
+  /// а не предложение алгоритма, и путать их нельзя.
+  Future<void> _toggle(
+    WidgetRef ref,
+    String categoryId,
+    bool isSelected,
+  ) async {
+    final monthKey = ref.read(currentMonthProvider);
+    final repo = ref.read(selectionRepositoryProvider);
+    final all = await repo.forMonth(monthKey);
+
+    if (isSelected) {
+      final existing = all
+          .where((s) => s.cardId == cardId && s.categoryId == categoryId)
+          .firstOrNull;
+      if (existing != null) await repo.delete(existing.id);
+    } else {
+      // Та же категория в другом банке — сгоревший слот: в магазине
+      // человек платит один раз и одной картой. Забираем её сюда.
+      for (final s in all.where((s) => s.categoryId == categoryId)) {
+        await repo.delete(s.id);
+      }
+      await repo.saveAll([
+        Selection(
+          id: Ids.generate(),
+          cardId: cardId,
+          monthKey: monthKey,
+          categoryId: categoryId,
+          status: SelectionStatus.userChosen,
+        ),
+      ]);
+    }
+
+    ref
+      ..invalidate(cardSelectionsProvider(cardId))
+      ..invalidate(activeCategoriesProvider)
+      ..invalidate(selectionCountProvider(monthKey));
   }
 }
