@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+.mc-dark{--c-bg:#16150F;--c-surface:#201E16;--c-surface-2:#2B2820;--c-border:#3B3729;--c-text:#F2EEE3;--c-text-2:#9A9384;--c-brand:#FFC72E;--c-brand-pressed:#E0A800;--c-on-brand:#1F1A05;--c-brand-sub:#3A2F0C;--c-success:#4ADE80;--c-error:#F87171;}
+</style>
+</helmet>
+<div class="{{ themeClass }}" style="width:360px; height:780px; display:flex; flex-direction:column; background: var(--c-bg,#FFFFFF); color: var(--c-text,#1A1814); border-radius:30px; overflow:hidden; font-family:'Golos Text','Manrope',sans-serif; box-shadow: inset 0 0 0 1px var(--c-border,#E3DDD0);">
+
+  <div style="height:36px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:13px; font-weight:600;">
+    <span>9:41</span>
+    <span style="display:inline-flex; align-items:center; gap:6px;">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 3.2C10.4 3.2 12.1 3.9 13.4 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5.2 6.4C6.1 5.6 7.3 5.1 8.5 5.1C9.7 5.1 10.9 5.6 11.8 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="8.6" r="1.2" fill="currentColor"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1.6" width="20" height="8.8" rx="2.4" stroke="currentColor" stroke-width="1.4"/><rect x="2.8" y="3.4" width="14" height="5.2" rx="1.2" fill="currentColor"/><rect x="22.4" y="4" width="1.6" height="4" rx="0.8" fill="currentColor"/></svg>
+    </span>
+  </div>
+
+  <div style="flex:0 0 auto; display:flex; align-items:center; gap:2px; padding:2px 8px 6px;">
+    <button style="width:48px; height:48px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color: var(--c-text,#1A1814); cursor:pointer;" aria-label="Назад">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div style="flex:1 1 auto; min-width:0; font-size:18px; font-weight:600;">Проверьте распознанное</div>
+  </div>
+
+  <sc-if value="{{ isFailed }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1 1 auto; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px 30px; gap:12px;">
+      <div style="width:64px; height:64px; border-radius:16px; background: var(--c-surface,#F7F5F0); display:flex; align-items:center; justify-content:center; color: var(--c-text-2,#6B665C);">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M4 5l16 14M8 5h11a1 1 0 0 1 1 1v10M4 8v10a1 1 0 0 0 1 1h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="font-size:19px; font-weight:600;">Не удалось распознать</div>
+      <div style="font-size:14px; line-height:1.45; color: var(--c-text-2,#6B665C); max-width:270px; text-wrap:pretty;">На скриншотах не нашлось категорий с процентами. Так бывает с непривычной вёрсткой банка. Можно попробовать другие скриншоты или ввести категории вручную — это быстро.</div>
+      <div style="display:flex; flex-direction:column; gap:10px; width:100%; margin-top:8px;">
+        <button style="width:100%; min-height:50px; border-radius:10px; border:none; background: var(--c-brand,#FFC000); color: var(--c-on-brand,#1F1A05); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">Ввести вручную</button>
+        <button style="width:100%; min-height:48px; border-radius:10px; border:1.5px solid var(--c-border,#E3DDD0); background:transparent; color: var(--c-text,#1A1814); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">Загрузить другие скриншоты</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasResults }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1 1 auto; overflow-y:auto; padding:4px 20px 16px; display:flex; flex-direction:column; gap:18px;">
+
+      <div style="font-size:14px; line-height:1.4; color: var(--c-text-2,#6B665C);">{{ summary }}</div>
+
+      <sc-if value="{{ hasUncertain }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="display:inline-flex; align-items:center; gap:7px; font-size:13px; font-weight:600; color: var(--c-brand-pressed,#E0A800);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v4M12 16.6h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            Под вопросом · проверьте вручную
+          </div>
+          <sc-for list="{{ uncertain }}" as="u" hint-placeholder-count="2">
+            <div style="border-radius:12px; border:1.5px solid var(--c-brand,#FFC000); background: var(--c-brand-sub,#FFF4D6); padding:12px 14px; display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                <div style="min-width:0;">
+                  <div style="font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ u.category }}</div>
+                  <div style="font-size:12px; color: var(--c-text-2,#6B665C);">{{ u.bank }}</div>
+                </div>
+                <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; padding:5px 10px; border-radius:8px; background: var(--c-bg,#fff); border:1px solid var(--c-border,#E3DDD0);">
+                  <span style="font-size:16px; font-weight:700; font-variant-numeric:tabular-nums;">{{ u.percent }}</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="color: var(--c-text-2,#6B665C);"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div style="font-size:12px; color: var(--c-text-2,#6B665C);">{{ u.note }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:20px; height:20px; border-radius:5px; flex:0 0 auto; background: {{ g.color }};"></div>
+            <div style="font-size:15px; font-weight:600;">{{ g.bank }}</div>
+            <div style="font-size:12px; color: var(--c-text-2,#6B665C);">{{ g.countText }}</div>
+          </div>
+          <div style="border-radius:12px; border:1px solid var(--c-border,#E3DDD0); overflow:hidden;">
+            <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3">
+              <div style="display:flex; align-items:center; gap:10px; min-height:50px; padding:9px 14px; background: var(--c-surface,#F7F5F0); border-bottom:1px solid var(--c-border,#E3DDD0);">
+                <div style="flex:1 1 auto; min-width:0; font-size:15px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.category }}</div>
+                <div style="flex:0 0 auto; font-size:16px; font-weight:700; font-variant-numeric:tabular-nums;">{{ r.percent }}</div>
+                <button style="flex:0 0 auto; width:30px; height:30px; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color: var(--c-text-2,#6B665C); cursor:pointer;" aria-label="Изменить">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </sc-for>
+            <button style="width:100%; min-height:44px; display:flex; align-items:center; justify-content:center; gap:6px; background: var(--c-surface,#F7F5F0); border:none; color: var(--c-text-2,#6B665C); font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+              Добавить категорию
+            </button>
+          </div>
+        </div>
+      </sc-for>
+
+    </div>
+
+    <div style="flex:0 0 auto; padding:12px 20px 24px;">
+      <button style="width:100%; min-height:52px; border-radius:10px; border:none; background: var(--c-brand,#FFC000); color: var(--c-on-brand,#1F1A05); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">{{ cta }}</button>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 360, &quot;height&quot;: 780 },
+  &quot;theme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;light&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;state&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;uncertain&quot;, &quot;confident&quot;, &quot;failed&quot;], &quot;default&quot;: &quot;uncertain&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const state = this.props.state || 'uncertain';
+    const C = { sber:'#21A038', alfa:'#EF3124', tb:'#1C1C1E' };
+    const groups = [
+      { bank:'Сбербанк', color:C.sber, rows:[
+        { category:'Супермаркеты', percent:'5%' },
+        { category:'Аптеки', percent:'5%' },
+        { category:'Транспорт', percent:'3%' }
+      ]},
+      { bank:'Альфа-Банк', color:C.alfa, rows:[
+        { category:'Кафе и рестораны', percent:'7%' },
+        { category:'АЗС и заправки', percent:'5%' }
+      ]},
+      { bank:'Т-Банк', color:C.tb, rows:[
+        { category:'Такси', percent:'10%' },
+        { category:'Онлайн-подписки', percent:'7%' }
+      ]}
+    ];
+    const catWord = n => n % 10 === 1 && n % 100 !== 11 ? 'категория' : ([2,3,4].includes(n % 10)) ? 'категории' : 'категорий';
+    groups.forEach(g => g.countText = g.rows.length + ' ' + catWord(g.rows.length));
+    const uncertain = [
+      { category:'Ювелирные украшения', bank:'Альфа-Банк', percent:'9%', note:'Процент читается нечётко — на скриншоте могло быть 9% или 4%.' },
+      { category:'Красота и уход', bank:'Т-Банк', percent:'5%', note:'Название распозналось не полностью. Проверьте, та ли это категория.' }
+    ];
+    const hasUncertain = state === 'uncertain';
+    const totalConfident = groups.reduce((s, g) => s + g.rows.length, 0);
+    return {
+      themeClass: this.props.theme === 'dark' ? 'mc-dark' : '',
+      isFailed: state === 'failed',
+      hasResults: state !== 'failed',
+      hasUncertain,
+      uncertain: hasUncertain ? uncertain : [],
+      groups,
+      summary: hasUncertain
+        ? ('Распознали ' + totalConfident + ' категорий уверенно и ' + uncertain.length + ' — под вопросом. Проверьте отмеченные жёлтым.')
+        : ('Все ' + totalConfident + ' категорий распознаны уверенно. Пробегитесь глазами и подтвердите.'),
+      cta: hasUncertain ? 'Всё верно, продолжить' : 'Продолжить'
+    };
+  }
+}
+</script>
+</body>
+</html>

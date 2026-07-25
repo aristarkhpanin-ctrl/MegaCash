@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+.mc-dark{--c-bg:#16150F;--c-surface:#201E16;--c-surface-2:#2B2820;--c-border:#3B3729;--c-text:#F2EEE3;--c-text-2:#9A9384;--c-brand:#FFC72E;--c-brand-pressed:#E0A800;--c-on-brand:#1F1A05;--c-brand-sub:#3A2F0C;--c-success:#4ADE80;--c-error:#F87171;}
+</style>
+</helmet>
+<div class="{{ themeClass }}" style="width:360px; height:780px; display:flex; flex-direction:column; background: var(--c-bg,#FFFFFF); color: var(--c-text,#1A1814); border-radius:30px; overflow:hidden; font-family:'Golos Text','Manrope',sans-serif; box-shadow: inset 0 0 0 1px var(--c-border,#E3DDD0);">
+
+  <div style="height:36px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:13px; font-weight:600;">
+    <span>9:41</span>
+    <span style="display:inline-flex; align-items:center; gap:6px;">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 3.2C10.4 3.2 12.1 3.9 13.4 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5.2 6.4C6.1 5.6 7.3 5.1 8.5 5.1C9.7 5.1 10.9 5.6 11.8 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="8.6" r="1.2" fill="currentColor"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1.6" width="20" height="8.8" rx="2.4" stroke="currentColor" stroke-width="1.4"/><rect x="2.8" y="3.4" width="14" height="5.2" rx="1.2" fill="currentColor"/><rect x="22.4" y="4" width="1.6" height="4" rx="0.8" fill="currentColor"/></svg>
+    </span>
+  </div>
+
+  <div style="flex:0 0 auto; display:flex; align-items:center; gap:2px; padding:2px 8px 6px;">
+    <button style="width:48px; height:48px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color: var(--c-text,#1A1814); cursor:pointer;" aria-label="Назад">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div style="flex:1 1 auto; min-width:0; font-size:18px; font-weight:600;">Активация в банках</div>
+  </div>
+
+  <div style="flex:0 0 auto; padding:2px 20px 12px;">
+    <div style="display:flex; gap:9px; padding:12px 14px; border-radius:12px; background: var(--c-brand-sub,#FFF4D6);">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; margin-top:1px;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5M12 7.6h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <div style="font-size:13px; line-height:1.4;">Откройте приложение банка и включите эти категории. Отмечайте здесь по ходу — список не потеряется.</div>
+    </div>
+  </div>
+
+  <div style="flex:1 1 auto; overflow-y:auto; padding:0 20px 16px; display:flex; flex-direction:column; gap:14px;">
+    <sc-for list="{{ banks }}" as="b" hint-placeholder-count="4">
+      <div style="border-radius:14px; border:1px solid var(--c-border,#E3DDD0); overflow:hidden; background: var(--c-surface,#F7F5F0);">
+        <div style="display:flex; align-items:center; gap:11px; padding:13px 14px; border-bottom:1px solid var(--c-border,#E3DDD0);">
+          <div style="width:34px; height:34px; border-radius:8px; flex:0 0 auto; background: {{ b.color }};"></div>
+          <div style="flex:1 1 auto; min-width:0;">
+            <div style="font-size:16px; font-weight:700;">{{ b.bank }}</div>
+            <div style="font-size:12px; color: var(--c-text-2,#6B665C);">{{ b.progressText }}</div>
+          </div>
+          <div style="flex:0 0 auto; width:26px; height:26px; border-radius:999px; background: {{ b.badgeBg }}; display:flex; align-items:center; justify-content:center;">
+            <sc-if value="{{ b.allDone }}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="color:#fff;"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+          </div>
+        </div>
+        <sc-for list="{{ b.cats }}" as="c" hint-placeholder-count="3">
+          <div style="display:flex; align-items:center; gap:11px; min-height:50px; padding:8px 14px; border-bottom:1px solid var(--c-border,#E3DDD0); background: var(--c-bg,#fff);">
+            <div style="width:24px; height:24px; flex:0 0 auto; border-radius:7px; border:2px solid {{ c.boxBorder }}; background: {{ c.boxBg }}; display:flex; align-items:center; justify-content:center;">
+              <sc-if value="{{ c.done }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color: var(--c-on-brand,#1F1A05);"><path d="M5 12.5l4.5 4.5L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></sc-if>
+            </div>
+            <span style="flex:1 1 auto; min-width:0; font-size:15px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-decoration: {{ c.strike }}; color: {{ c.fg }};">{{ c.category }}</span>
+            <span style="flex:0 0 auto; font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; color: {{ c.fg }};">{{ c.percent }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:0 0 auto; padding:12px 20px 24px;">
+    <button style="width:100%; min-height:52px; border-radius:10px; border:none; background: var(--c-brand,#FFC000); color: var(--c-on-brand,#1F1A05); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">{{ cta }}</button>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 360, &quot;height&quot;: 780 },
+  &quot;theme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;light&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const C = { sber:'#21A038', alfa:'#EF3124', tb:'#1C1C1E', vtb:'#009FDF' };
+    const raw = [
+      { bank:'Сбербанк', color:C.sber, cats:[
+        { category:'Супермаркеты', percent:'5%', done:true },
+        { category:'Аптеки', percent:'5%', done:true }
+      ]},
+      { bank:'Альфа-Банк', color:C.alfa, cats:[
+        { category:'Кафе и рестораны', percent:'7%', done:true },
+        { category:'АЗС и заправки', percent:'5%', done:false }
+      ]},
+      { bank:'Т-Банк', color:C.tb, cats:[
+        { category:'Такси', percent:'10%', done:false },
+        { category:'Онлайн-подписки', percent:'7%', done:false }
+      ]},
+      { bank:'ВТБ', color:C.vtb, cats:[
+        { category:'Транспорт', percent:'3%', done:false }
+      ]}
+    ];
+    const banks = raw.map(b => {
+      const done = b.cats.filter(c => c.done).length;
+      const allDone = done === b.cats.length;
+      return {
+        ...b,
+        allDone,
+        progressText: 'Включено ' + done + ' из ' + b.cats.length,
+        badgeBg: allDone ? 'var(--c-success,#1E8E3E)' : 'var(--c-surface-2,#EFEBE2)',
+        cats: b.cats.map(c => ({
+          ...c,
+          boxBorder: c.done ? 'var(--c-brand,#FFC000)' : 'var(--c-border,#E3DDD0)',
+          boxBg: c.done ? 'var(--c-brand,#FFC000)' : 'transparent',
+          strike: c.done ? 'line-through' : 'none',
+          fg: c.done ? 'var(--c-text-2,#6B665C)' : 'var(--c-text,#1A1814)'
+        }))
+      };
+    });
+    const totalDone = raw.reduce((s, b) => s + b.cats.filter(c => c.done).length, 0);
+    const total = raw.reduce((s, b) => s + b.cats.length, 0);
+    return {
+      themeClass: this.props.theme === 'dark' ? 'mc-dark' : '',
+      banks,
+      cta: totalDone === total ? 'Всё включено — готово' : ('Всё включил (' + totalDone + '/' + total + ')')
+    };
+  }
+}
+</script>
+</body>
+</html>

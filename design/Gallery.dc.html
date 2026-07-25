@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</helmet>
+<div style="width:1640px; box-sizing:border-box; padding:60px 64px 90px; background:#EDEAE2; font-family:'Golos Text','Manrope',sans-serif; color:#1A1814; display:flex; flex-direction:column; gap:52px;">
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="display:inline-flex; align-items:center; gap:10px;">
+      <div style="width:34px; height:34px; border-radius:9px; background:#FFC000; display:flex; align-items:center; justify-content:center; color:#1F1A05; font-weight:800; font-size:20px;">М</div>
+      <span style="font-size:13px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#6B665C;">МегаКэш · Карта экранов</span>
+    </div>
+    <h1 style="margin:0; font-size:44px; font-weight:800; letter-spacing:-0.02em; line-height:1.05;">Все 17 экранов</h1>
+    <p style="margin:0; max-width:760px; font-size:17px; line-height:1.5; color:#54504A; text-wrap:pretty;">Полный поток приложения по группам. Каждый экран показан в светлой и тёмной темах. Отдельные состояния (пусто, переполнение, ошибки) настраиваются через панель Tweaks на файле экрана.</p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;">
+      <a href="#grp-a" style="text-decoration:none; font-size:13px; font-weight:600; color:#1A1814; background:#FFFFFF; border:1px solid #E3DDD0; border-radius:999px; padding:7px 15px;">A · Основной сценарий</a>
+      <a href="#grp-b" style="text-decoration:none; font-size:13px; font-weight:600; color:#1A1814; background:#FFFFFF; border:1px solid #E3DDD0; border-radius:999px; padding:7px 15px;">Б · Настройка месяца</a>
+      <a href="#grp-v" style="text-decoration:none; font-size:13px; font-weight:600; color:#1A1814; background:#FFFFFF; border:1px solid #E3DDD0; border-radius:999px; padding:7px 15px;">В · Онбординг</a>
+      <a href="#grp-g" style="text-decoration:none; font-size:13px; font-weight:600; color:#1A1814; background:#FFFFFF; border:1px solid #E3DDD0; border-radius:999px; padding:7px 15px;">Г · Служебное</a>
+    </div>
+  </div>
+
+  <div style="height:1px; background:#D8D2C6;"></div>
+
+  <section id="grp-a" style="display:flex; flex-direction:column; gap:22px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <h2 style="margin:0; font-size:26px; font-weight:800; letter-spacing:-0.01em;">A · Основной сценарий</h2>
+      <p style="margin:0; font-size:15px; color:#6B665C;">Ежедневное использование: посмотреть категории → узнать карту → управлять картами.</p>
+    </div>
+    <div style="display:flex; gap:34px; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">A1 · Главный</div><div style="display:flex; gap:14px;"><dc-import name="ScreenA1" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenA1" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">A2 · Ответ (какая карта)</div><div style="display:flex; gap:14px;"><dc-import name="ScreenA2" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenA2" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">A3 · Мои карты</div><div style="display:flex; gap:14px;"><dc-import name="ScreenA3" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenA3" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">A4 · Карта / редактирование</div><div style="display:flex; gap:14px;"><dc-import name="ScreenA4" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenA4" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+    </div>
+  </section>
+
+  <div style="height:1px; background:#D8D2C6;"></div>
+
+  <section id="grp-b" style="display:flex; flex-direction:column; gap:22px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <h2 style="margin:0; font-size:26px; font-weight:800; letter-spacing:-0.01em;">Б · Настройка месяца</h2>
+      <p style="margin:0; font-size:15px; color:#6B665C;">Раз в месяц: выбрать банк → указать категории и проценты. Б5 — ключевой экран выбора категорий. Без рекламы.</p>
+    </div>
+    <div style="display:flex; gap:34px; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Б1 · Старт настройки</div><div style="display:flex; gap:14px;"><dc-import name="ScreenB1" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenB1" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Б2 · Выбор банка</div><div style="display:flex; gap:14px;"><dc-import name="ScreenB2" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenB2" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Б3 · Способ ввода</div><div style="display:flex; gap:14px;"><dc-import name="ScreenB3" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenB3" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Б4 · Импорт скриншотов</div><div style="display:flex; gap:14px;"><dc-import name="ScreenB4" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenB4" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Б5 · Выбор категорий ★</div><div style="display:flex; gap:14px;"><dc-import name="ScreenB5" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenB5" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Б6 · Ручной ввод</div><div style="display:flex; gap:14px;"><dc-import name="ScreenB6" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenB6" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Б7 · Проверка и правка</div><div style="display:flex; gap:14px;"><dc-import name="ScreenB7" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenB7" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Б8 · Готово</div><div style="display:flex; gap:14px;"><dc-import name="ScreenB8" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenB8" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+    </div>
+  </section>
+
+  <div style="height:1px; background:#D8D2C6;"></div>
+
+  <section id="grp-v" style="display:flex; flex-direction:column; gap:22px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <h2 style="margin:0; font-size:26px; font-weight:800; letter-spacing:-0.01em;">В · Онбординг</h2>
+      <p style="margin:0; font-size:15px; color:#6B665C;">Первый запуск: короткое объяснение ценности и переход к настройке первой карты.</p>
+    </div>
+    <div style="display:flex; gap:34px; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">В1 · Зачем это</div><div style="display:flex; gap:14px;"><dc-import name="ScreenV1" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenV1" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">В2 · Как работает</div><div style="display:flex; gap:14px;"><dc-import name="ScreenV2" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenV2" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">В3 · Приватность</div><div style="display:flex; gap:14px;"><dc-import name="ScreenV3" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenV3" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+    </div>
+  </section>
+
+  <div style="height:1px; background:#D8D2C6;"></div>
+
+  <section id="grp-g" style="display:flex; flex-direction:column; gap:22px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <h2 style="margin:0; font-size:26px; font-weight:800; letter-spacing:-0.01em;">Г · Служебное</h2>
+      <p style="margin:0; font-size:15px; color:#6B665C;">Настройки приложения и информация. Здесь же дисклеймер о независимости от банков.</p>
+    </div>
+    <div style="display:flex; gap:34px; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Г1 · Настройки</div><div style="display:flex; gap:14px;"><dc-import name="ScreenG1" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenG1" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+      <div style="display:flex; flex-direction:column; gap:10px;"><div style="font-size:13px; font-weight:700; color:#6B665C;">Г2 · О приложении</div><div style="display:flex; gap:14px;"><dc-import name="ScreenG2" theme="light" hint-size="360px,780px"></dc-import><dc-import name="ScreenG2" theme="dark" hint-size="360px,780px"></dc-import></div></div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{ &quot;$preview&quot;: { &quot;width&quot;: 1640, &quot;height&quot;: 2600 } }"></script>
+</body>
+</html>

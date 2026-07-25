@@ -1,0 +1,39 @@
+name: megacash
+description: "МегаКэш — подсказывает, какой картой платить, чтобы получить больший кэшбэк."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Состояние
+  flutter_riverpod: ^3.0.0
+  # Навигация
+  go_router: ^16.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  fonts:
+    - family: Golos Text
+      fonts:
+        - asset: assets/fonts/GolosText-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/GolosText-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/GolosText-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/GolosText-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/GolosText-ExtraBold.ttf
+          weight: 800

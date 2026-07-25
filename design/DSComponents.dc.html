@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@keyframes mc-spin { to { transform: rotate(360deg); } }
+</style>
+</helmet>
+<div style="display:flex; flex-direction:column; gap:30px; color:var(--c-text,#1A1814); font-family:'Golos Text','Manrope',sans-serif;">
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">01 · Карта банка</div>
+    <div style="display:flex; gap:22px; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; gap:8px; width:210px;">
+        <dc-import name="BankCard" variant="normal" bank-name="Сбербанк" product-name="СберКарта" percent="5" bank-color="#21A038" hint-size="210px,132px"></dc-import>
+        <div style="font-size:12px; color:var(--c-text-2,#6B665C);">обычная</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; width:210px;">
+        <dc-import name="BankCard" variant="winner" bank-name="Сбербанк" product-name="СберКарта" percent="5" bank-color="#21A038" hint-size="210px,132px"></dc-import>
+        <div style="font-size:12px; color:var(--c-text-2,#6B665C);">победитель — приподнята, с тенью</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <dc-import name="BankCard" variant="loser" bank-name="ВТБ" product-name="Мультикарта" percent="1" bank-color="#009FDF" hint-size="100%,52px"></dc-import>
+      <div style="font-size:12px; color:var(--c-text-2,#6B665C);">проигравшая — сжата в строку</div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">02 · Плитка категории</div>
+    <div style="display:flex; gap:14px; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; gap:8px; width:190px;">
+        <dc-import name="CategoryTile" category="Супермаркеты" percent="5" bank-name="Сбербанк" bank-color="#21A038" pressed="false" hint-size="190px,120px"></dc-import>
+        <div style="font-size:12px; color:var(--c-text-2,#6B665C);">обычная</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; width:190px;">
+        <dc-import name="CategoryTile" category="Такси" percent="10" bank-name="Т-Банк" bank-color="#1C1C1E" pressed="true" hint-size="190px,120px"></dc-import>
+        <div style="font-size:12px; color:var(--c-text-2,#6B665C);">нажатая</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">03 · Чип категории</div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+      <dc-import name="Chip" state="selected" label="Кафе и рестораны" percent="7" hint-size="180px,40px"></dc-import>
+      <dc-import name="Chip" state="unselected" label="Супермаркеты" percent="5" hint-size="150px,40px"></dc-import>
+      <dc-import name="Chip" state="disabled" label="Такси" percent="3" hint-size="110px,40px"></dc-import>
+    </div>
+    <div style="font-size:12px; color:var(--c-text-2,#6B665C);">выбран (жёлтая заливка) · не выбран (обводка) · недоступен (приглушён)</div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">04 · Кнопка главная</div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+      <button style="min-height:48px; padding:0 24px; border-radius:10px; border:none; background:var(--c-brand,#FFC000); color:var(--c-on-brand,#1F1A05); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">Показать карту</button>
+      <button style="min-height:48px; padding:0 24px; border-radius:10px; border:none; background:var(--c-brand-pressed,#E0A800); color:var(--c-on-brand,#1F1A05); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">Нажата</button>
+      <button style="min-height:48px; padding:0 24px; border-radius:10px; border:none; background:var(--c-surface-2,#EFEBE2); color:var(--c-text-2,#6B665C); font-family:inherit; font-size:16px; font-weight:600; cursor:not-allowed;">Недоступна</button>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:34px; flex-wrap:wrap;">
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">05 · Кнопка второстепенная</div>
+      <button style="min-height:48px; padding:0 24px; border-radius:10px; border:1.5px solid var(--c-border,#E3DDD0); background:transparent; color:var(--c-text,#1A1814); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">Добавить карту</button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">06 · Кнопка текстовая</div>
+      <button style="min-height:48px; padding:0 8px; border-radius:10px; border:none; background:transparent; color:var(--c-text,#1A1814); font-family:inherit; font-size:16px; font-weight:600; text-decoration:underline; text-underline-offset:3px; cursor:pointer;">Пропустить</button>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">07 · Поле ввода</div>
+    <div style="display:flex; gap:18px; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; gap:6px; width:230px;">
+        <div style="font-size:12px; font-weight:500; color:var(--c-text-2,#6B665C);">Название продукта</div>
+        <div style="min-height:48px; padding:0 14px; border-radius:10px; border:1.5px solid var(--c-border,#E3DDD0); background:var(--c-surface,#F7F5F0); display:flex; align-items:center; font-size:16px; color:var(--c-text,#1A1814);">СберКарта</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; width:230px;">
+        <div style="font-size:12px; font-weight:500; color:var(--c-text-2,#6B665C);">Базовый процент</div>
+        <div style="min-height:48px; padding:0 14px; border-radius:10px; border:1.5px solid var(--c-error,#C5221F); background:var(--c-surface,#F7F5F0); display:flex; align-items:center; font-size:16px; color:var(--c-text,#1A1814);">120</div>
+        <div style="font-size:12px; color:var(--c-error,#C5221F);">Процент не может быть больше 100.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">08 · Строка списка</div>
+    <div style="border-radius:12px; overflow:hidden; border:1px solid var(--c-border,#E3DDD0);">
+      <div style="display:flex; align-items:center; gap:12px; min-height:56px; padding:10px 14px; background:var(--c-surface,#F7F5F0); border-bottom:1px solid var(--c-border,#E3DDD0);">
+        <div style="width:36px; height:36px; border-radius:8px; flex:0 0 auto; background:#21A038;"></div>
+        <div style="flex:1 1 auto; min-width:0;">
+          <div style="font-size:16px; font-weight:600; color:var(--c-text,#1A1814);">Сбербанк</div>
+          <div style="font-size:13px; color:var(--c-text-2,#6B665C);">СберКарта · базовый 1%</div>
+        </div>
+        <div style="font-size:13px; color:var(--c-text-2,#6B665C);">3 категории</div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color:var(--c-text-2,#6B665C);"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; min-height:56px; padding:10px 14px; background:var(--c-surface,#F7F5F0);">
+        <div style="width:36px; height:36px; border-radius:8px; flex:0 0 auto; background:#EF3124;"></div>
+        <div style="flex:1 1 auto; min-width:0;">
+          <div style="font-size:16px; font-weight:600; color:var(--c-text,#1A1814);">Альфа-Банк</div>
+          <div style="font-size:13px; color:var(--c-text-2,#6B665C);">Alfa Travel · базовый 1,5%</div>
+        </div>
+        <div style="font-size:13px; color:var(--c-text-2,#6B665C);">3 категории</div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="color:var(--c-text-2,#6B665C);"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">09 · Плашка-подсказка</div>
+    <div style="padding:14px 16px; border-radius:12px; background:var(--c-brand-sub,#FFF4D6); display:flex; gap:10px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; margin-top:1px; color:var(--c-text,#1A1814);"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5M12 7.6h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <div style="font-size:14px; line-height:1.4; color:var(--c-text,#1A1814);">Наступил новый месяц. Категории кэшбэка сбросились — выберите новые.</div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">10 · Пустое состояние</div>
+    <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; padding:22px; border:1px solid var(--c-border,#E3DDD0); border-radius:12px;">
+      <div style="width:56px; height:56px; border-radius:14px; background:var(--c-surface,#F7F5F0); display:flex; align-items:center; justify-content:center; color:var(--c-text-2,#6B665C);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="19" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M2.5 9.5h19" stroke="currentColor" stroke-width="1.8"/></svg>
+      </div>
+      <div style="font-size:18px; font-weight:600; color:var(--c-text,#1A1814);">Пока нет карт</div>
+      <div style="font-size:14px; line-height:1.45; color:var(--c-text-2,#6B665C); max-width:280px; text-wrap:pretty;">Добавьте банковские карты, чтобы видеть, какой платить у кассы.</div>
+      <button style="margin-top:4px; min-height:48px; padding:0 22px; border-radius:10px; border:none; background:var(--c-brand,#FFC000); color:var(--c-on-brand,#1F1A05); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">Добавить карту</button>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">11 · Индикатор загрузки</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--c-text-2,#6B665C);"><span>Распознаём скриншоты</span><span>3 из 8</span></div>
+      <div style="height:8px; border-radius:999px; background:var(--c-surface-2,#EFEBE2); overflow:hidden;"><div style="width:38%; height:100%; border-radius:999px; background:var(--c-brand,#FFC000);"></div></div>
+      <div style="font-size:12px; color:var(--c-text-2,#6B665C);">определённый прогресс</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px; margin-top:4px;">
+      <div style="width:28px; height:28px; border-radius:999px; border:3px solid var(--c-surface-2,#EFEBE2); border-top-color:var(--c-brand,#FFC000); animation:mc-spin 0.8s linear infinite;"></div>
+      <div style="font-size:14px; color:var(--c-text-2,#6B665C);">неопределённый — идёт обработка</div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">12 · Рекламный баннер</div>
+    <div style="width:100%; max-width:320px; height:50px; border-radius:8px; border:1px dashed var(--c-border,#E3DDD0); background:var(--c-surface-2,#EFEBE2); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:500; color:var(--c-text-2,#6B665C);">место под рекламу · 320×50</div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">13 · Нижняя навигация</div>
+    <div style="height:64px; border:1px solid var(--c-border,#E3DDD0); border-radius:12px; display:flex; align-items:stretch; padding:0 20px; overflow:hidden;">
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; color:var(--c-text,#1A1814);">
+        <div style="position:relative; width:44px; height:26px; display:flex; align-items:center; justify-content:center;">
+          <div style="position:absolute; inset:0; border-radius:999px; background:var(--c-brand-sub,#FFF4D6);"></div>
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" style="position:relative;"><rect x="3" y="3" width="7.5" height="7.5" rx="1.6" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.6" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.6" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.6" stroke="currentColor" stroke-width="1.8"/></svg>
+        </div>
+        <span style="font-size:11px; font-weight:600;">Кэшбэк</span>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; color:var(--c-text-2,#6B665C);">
+        <div style="width:44px; height:26px; display:flex; align-items:center; justify-content:center;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5" width="19" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M2.5 9.5h19" stroke="currentColor" stroke-width="1.8"/></svg>
+        </div>
+        <span style="font-size:11px; font-weight:500;">Карты</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:12px;">
+    <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--c-text-2,#6B665C);">14 · Шапка экрана</div>
+    <div style="border:1px solid var(--c-border,#E3DDD0); border-radius:12px; overflow:hidden;">
+      <div style="display:flex; align-items:center; gap:6px; padding:6px 8px; background:var(--c-surface,#F7F5F0);">
+        <button style="width:48px; height:48px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color:var(--c-text,#1A1814); cursor:pointer;" aria-label="Назад">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div style="flex:1 1 auto; min-width:0; font-size:18px; font-weight:600; color:var(--c-text,#1A1814); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Карточка банка</div>
+        <button style="min-height:44px; padding:0 14px; border-radius:10px; border:none; background:transparent; color:var(--c-error,#C5221F); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer;">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{ &quot;$preview&quot;: { &quot;width&quot;: 560, &quot;height&quot;: 1700 } }"></script>
+</body>
+</html>

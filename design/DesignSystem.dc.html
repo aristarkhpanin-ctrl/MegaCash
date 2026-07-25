@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+.mc-dark{--c-bg:#16150F;--c-surface:#201E16;--c-surface-2:#2B2820;--c-border:#3B3729;--c-text:#F2EEE3;--c-text-2:#9A9384;--c-brand:#FFC72E;--c-brand-pressed:#E0A800;--c-on-brand:#1F1A05;--c-brand-sub:#3A2F0C;--c-success:#4ADE80;--c-error:#F87171;}
+.mc-light{--c-bg:#FFFFFF;--c-surface:#F7F5F0;--c-surface-2:#EFEBE2;--c-border:#E3DDD0;--c-text:#1A1814;--c-text-2:#6B665C;--c-brand:#FFC000;--c-brand-pressed:#E0A800;--c-on-brand:#1F1A05;--c-brand-sub:#FFF4D6;--c-success:#1E8E3E;--c-error:#C5221F;}
+</style>
+</helmet>
+<div style="width:1280px; box-sizing:border-box; padding:56px 60px 72px; background:#EDEAE2; font-family:'Golos Text','Manrope',sans-serif; color:#1A1814; display:flex; flex-direction:column; gap:44px;">
+
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <div style="display:inline-flex; align-items:center; gap:10px;">
+      <div style="width:34px; height:34px; border-radius:9px; background:#FFC000; display:flex; align-items:center; justify-content:center; color:#1F1A05; font-weight:800; font-size:20px;">М</div>
+      <span style="font-size:13px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#6B665C;">МегаКэш · Дизайн-система</span>
+    </div>
+    <h1 style="margin:0; font-size:44px; font-weight:800; letter-spacing:-0.02em; line-height:1.05;">Помощник по кэшбэку</h1>
+    <p style="margin:0; max-width:720px; font-size:17px; line-height:1.5; color:#54504A; text-wrap:pretty;">Утилитарное Android-приложение: подсказывает, какой картой платить в конкретной категории, чтобы получить больший кэшбэк. Спокойный «бумажный» фон, единственный акцент — жёлтый. Один шрифт, минимум теней, крупные проценты.</p>
+  </div>
+
+  <div style="height:1px; background:#D8D2C6;"></div>
+
+  <!-- ПАЛИТРА -->
+  <section style="display:flex; flex-direction:column; gap:20px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <h2 style="margin:0; font-size:24px; font-weight:700; letter-spacing:-0.01em;">Палитра</h2>
+      <p style="margin:0; font-size:15px; color:#6B665C;">Две темы. Роль → значение. Жёлтый — единственный акцент, им нельзя заливать большие поверхности.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:28px;">
+
+      <div style="background:#FFFFFF; border:1px solid #E3DDD0; border-radius:16px; padding:22px; display:flex; flex-direction:column; gap:16px;">
+        <div style="font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#6B665C;">Светлая тема</div>
+        <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:10px;">
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#FFFFFF; border:1px solid #E3DDD0;"></div><div style="font-size:11px; font-weight:600;">bg</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#FFFFFF</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#F7F5F0; border:1px solid #E3DDD0;"></div><div style="font-size:11px; font-weight:600;">surface</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#F7F5F0</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#EFEBE2; border:1px solid #E3DDD0;"></div><div style="font-size:11px; font-weight:600;">surface2</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#EFEBE2</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#E3DDD0;"></div><div style="font-size:11px; font-weight:600;">border</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#E3DDD0</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#1A1814;"></div><div style="font-size:11px; font-weight:600;">text</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#1A1814</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#6B665C;"></div><div style="font-size:11px; font-weight:600;">text2</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#6B665C</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#FFC000;"></div><div style="font-size:11px; font-weight:600;">brand</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#FFC000</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#E0A800;"></div><div style="font-size:11px; font-weight:600;">brandPr.</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#E0A800</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#FFF4D6;"></div><div style="font-size:11px; font-weight:600;">brandSub</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#FFF4D6</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#1F1A05;"></div><div style="font-size:11px; font-weight:600;">onBrand</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#1F1A05</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#1E8E3E;"></div><div style="font-size:11px; font-weight:600;">success</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#1E8E3E</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#C5221F;"></div><div style="font-size:11px; font-weight:600;">error</div><div style="font-size:10px; color:#8A857B; font-variant-numeric:tabular-nums;">#C5221F</div></div>
+        </div>
+      </div>
+
+      <div style="background:#16150F; border:1px solid #3B3729; border-radius:16px; padding:22px; display:flex; flex-direction:column; gap:16px;">
+        <div style="font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#9A9384;">Тёмная тема</div>
+        <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:10px;">
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#16150F; border:1px solid #3B3729;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">bg</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#16150F</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#201E16; border:1px solid #3B3729;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">surface</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#201E16</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#2B2820; border:1px solid #3B3729;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">surface2</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#2B2820</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#3B3729;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">border</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#3B3729</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#F2EEE3;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">text</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#F2EEE3</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#9A9384;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">text2</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#9A9384</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#FFC72E;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">brand</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#FFC72E</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#E0A800;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">brandPr.</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#E0A800</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#3A2F0C;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">brandSub</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#3A2F0C</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#1F1A05; border:1px solid #3B3729;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">onBrand</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#1F1A05</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#4ADE80;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">success</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#4ADE80</div></div>
+          <div style="display:flex; flex-direction:column; gap:6px;"><div style="height:56px; border-radius:9px; background:#F87171;"></div><div style="font-size:11px; font-weight:600; color:#F2EEE3;">error</div><div style="font-size:10px; color:#7C766A; font-variant-numeric:tabular-nums;">#F87171</div></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div style="height:1px; background:#D8D2C6;"></div>
+
+  <!-- ТИПОГРАФИКА + ТОКЕНЫ -->
+  <section style="display:grid; grid-template-columns:1.4fr 1fr; gap:28px;">
+    <div style="display:flex; flex-direction:column; gap:18px;">
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <h2 style="margin:0; font-size:24px; font-weight:700; letter-spacing:-0.01em;">Типографика</h2>
+        <p style="margin:0; font-size:15px; color:#6B665C;">Один шрифт — Golos Text. Иерархия строится весом и размером.</p>
+      </div>
+      <div style="background:#FFFFFF; border:1px solid #E3DDD0; border-radius:16px; overflow:hidden;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #EFEBE2;"><span style="font-size:40px; font-weight:800; line-height:1;">5%</span><span style="font-size:12px; color:#8A857B; white-space:nowrap;">display · 40/800</span></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #EFEBE2;"><span style="font-size:26px; font-weight:700; line-height:1.15;">Заголовок экрана</span><span style="font-size:12px; color:#8A857B; white-space:nowrap;">title · 26/700</span></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #EFEBE2;"><span style="font-size:18px; font-weight:600; line-height:1.25;">Заголовок блока</span><span style="font-size:12px; color:#8A857B; white-space:nowrap;">block · 18/600</span></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #EFEBE2;"><span style="font-size:16px; font-weight:400; line-height:1.4;">Основной текст приложения</span><span style="font-size:12px; color:#8A857B; white-space:nowrap;">body · 16/400</span></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:16px 20px; border-bottom:1px solid #EFEBE2;"><span style="font-size:14px; font-weight:400; line-height:1.4; color:#54504A;">Подпись и пояснение</span><span style="font-size:12px; color:#8A857B; white-space:nowrap;">caption · 14/400</span></div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:16px 20px;"><span style="font-size:12px; font-weight:500; line-height:1.2; letter-spacing:0.04em; text-transform:uppercase; color:#6B665C;">Мелкая метка</span><span style="font-size:12px; color:#8A857B; white-space:nowrap;">label · 12/500</span></div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:18px;">
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <h2 style="margin:0; font-size:24px; font-weight:700; letter-spacing:-0.01em;">Форма</h2>
+        <p style="margin:0; font-size:15px; color:#6B665C;">Отступы, радиусы, цель нажатия.</p>
+      </div>
+      <div style="background:#FFFFFF; border:1px solid #E3DDD0; border-radius:16px; padding:20px; display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:#6B665C;">Отступы (dp)</div>
+          <div style="display:flex; align-items:flex-end; gap:10px;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;"><div style="width:4px; height:4px; background:#FFC000;"></div><span style="font-size:10px; color:#8A857B;">4</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;"><div style="width:8px; height:8px; background:#FFC000;"></div><span style="font-size:10px; color:#8A857B;">8</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;"><div style="width:12px; height:12px; background:#FFC000;"></div><span style="font-size:10px; color:#8A857B;">12</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;"><div style="width:16px; height:16px; background:#FFC000;"></div><span style="font-size:10px; color:#8A857B;">16</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;"><div style="width:24px; height:24px; background:#FFC000;"></div><span style="font-size:10px; color:#8A857B;">24</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;"><div style="width:32px; height:32px; background:#FFC000;"></div><span style="font-size:10px; color:#8A857B;">32</span></div>
+          </div>
+          <div style="font-size:12px; color:#8A857B;">Поля экрана — 20 dp слева и справа.</div>
+        </div>
+        <div style="height:1px; background:#EFEBE2;"></div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:#6B665C;">Радиусы (dp)</div>
+          <div style="display:flex; gap:12px;">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:48px; height:40px; border:1.5px solid #1A1814; border-radius:10px;"></div><span style="font-size:10px; color:#8A857B;">кнопка/поле 10</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:48px; height:40px; border:1.5px solid #1A1814; border-radius:12px;"></div><span style="font-size:10px; color:#8A857B;">карта 12</span></div>
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:48px; height:40px; border:1.5px solid #1A1814; border-radius:999px;"></div><span style="font-size:10px; color:#8A857B;">чип 999</span></div>
+          </div>
+        </div>
+        <div style="height:1px; background:#EFEBE2;"></div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:48px; height:48px; border:1.5px dashed #C5221F; border-radius:10px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:10px; color:#C5221F; text-align:center; line-height:1.1;">48×48</div>
+          <div style="font-size:13px; color:#54504A; line-height:1.4;">Минимальная цель нажатия — <b>48 dp</b>. Ни одна интерактивная зона не меньше.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="height:1px; background:#D8D2C6;"></div>
+
+  <!-- КОМПОНЕНТЫ В ДВУХ ТЕМАХ -->
+  <section style="display:flex; flex-direction:column; gap:20px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <h2 style="margin:0; font-size:24px; font-weight:700; letter-spacing:-0.01em;">Компоненты · 14</h2>
+      <p style="margin:0; font-size:15px; color:#6B665C;">Все компоненты во всех состояниях. Слева — светлая тема, справа — тёмная. Значения тянутся из общих токенов.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:28px; align-items:start;">
+      <div class="mc-light" style="background:#FFFFFF; border:1px solid #E3DDD0; border-radius:18px; padding:26px;">
+        <div style="font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#6B665C; margin-bottom:18px;">Светлая тема</div>
+        <dc-import name="DSComponents" hint-size="100%,1700px"></dc-import>
+      </div>
+      <div class="mc-dark" style="background:#16150F; border:1px solid #3B3729; border-radius:18px; padding:26px;">
+        <div style="font-size:13px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#9A9384; margin-bottom:18px;">Тёмная тема</div>
+        <dc-import name="DSComponents" hint-size="100%,1700px"></dc-import>
+      </div>
+    </div>
+  </section>
+
+  <div style="height:1px; background:#D8D2C6;"></div>
+
+  <!-- ЭКРАНЫ -->
+  <section style="display:flex; flex-direction:column; gap:20px;">
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <h2 style="margin:0; font-size:24px; font-weight:700; letter-spacing:-0.01em;">Ключевые экраны</h2>
+      <p style="margin:0; font-size:15px; color:#6B665C;">A1 «Главный» и A2 «Ответ» — обе темы. Полный набор состояний см. в отдельных файлах экранов.</p>
+    </div>
+    <div style="display:flex; gap:26px; flex-wrap:wrap;">
+      <div style="display:flex; flex-direction:column; gap:8px;"><dc-import name="ScreenA1" theme="light" state="normal" banner="{{ true }}" hint-size="360px,780px"></dc-import><div style="font-size:12px; color:#6B665C; text-align:center;">A1 · светлая</div></div>
+      <div style="display:flex; flex-direction:column; gap:8px;"><dc-import name="ScreenA1" theme="dark" state="normal" banner="{{ true }}" hint-size="360px,780px"></dc-import><div style="font-size:12px; color:#6B665C; text-align:center;">A1 · тёмная</div></div>
+      <div style="display:flex; flex-direction:column; gap:8px;"><dc-import name="ScreenA2" theme="light" state="normal" hint-size="360px,780px"></dc-import><div style="font-size:12px; color:#6B665C; text-align:center;">A2 · светлая</div></div>
+      <div style="display:flex; flex-direction:column; gap:8px;"><dc-import name="ScreenA2" theme="dark" state="normal" hint-size="360px,780px"></dc-import><div style="font-size:12px; color:#6B665C; text-align:center;">A2 · тёмная</div></div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{ &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 2400 } }"></script>
+</body>
+</html>

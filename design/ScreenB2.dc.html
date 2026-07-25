@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+.mc-dark{--c-bg:#16150F;--c-surface:#201E16;--c-surface-2:#2B2820;--c-border:#3B3729;--c-text:#F2EEE3;--c-text-2:#9A9384;--c-brand:#FFC72E;--c-brand-pressed:#E0A800;--c-on-brand:#1F1A05;--c-brand-sub:#3A2F0C;--c-success:#4ADE80;--c-error:#F87171;}
+</style>
+</helmet>
+<div class="{{ themeClass }}" style="width:360px; height:780px; display:flex; flex-direction:column; background: var(--c-bg,#FFFFFF); color: var(--c-text,#1A1814); border-radius:30px; overflow:hidden; font-family:'Golos Text','Manrope',sans-serif; box-shadow: inset 0 0 0 1px var(--c-border,#E3DDD0);">
+
+  <div style="height:36px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:13px; font-weight:600;">
+    <span>9:41</span>
+    <span style="display:inline-flex; align-items:center; gap:6px;">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 3.2C10.4 3.2 12.1 3.9 13.4 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5.2 6.4C6.1 5.6 7.3 5.1 8.5 5.1C9.7 5.1 10.9 5.6 11.8 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="8.6" r="1.2" fill="currentColor"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1.6" width="20" height="8.8" rx="2.4" stroke="currentColor" stroke-width="1.4"/><rect x="2.8" y="3.4" width="14" height="5.2" rx="1.2" fill="currentColor"/><rect x="22.4" y="4" width="1.6" height="4" rx="0.8" fill="currentColor"/></svg>
+    </span>
+  </div>
+
+  <div style="flex:0 0 auto; display:flex; align-items:center; gap:2px; padding:2px 8px 6px;">
+    <button style="width:48px; height:48px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color: var(--c-text,#1A1814); cursor:pointer;" aria-label="Назад">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div style="flex:1 1 auto; min-width:0; font-size:18px; font-weight:600;">Скриншоты</div>
+    <div style="flex:0 0 auto; font-size:13px; font-weight:600; color: {{ countColor }}; padding-right:14px;">{{ selected }}/15</div>
+  </div>
+
+  <div style="flex:1 1 auto; overflow-y:auto; padding:6px 20px 18px; display:flex; flex-direction:column; gap:16px;">
+
+    <div style="display:flex; gap:12px; padding:14px; border-radius:12px; background: var(--c-surface,#F7F5F0); border:1px solid var(--c-border,#E3DDD0);">
+      <div style="width:52px; height:80px; flex:0 0 auto; border-radius:8px; background: var(--c-surface-2,#EFEBE2); border:1px solid var(--c-border,#E3DDD0); display:flex; flex-direction:column; gap:4px; padding:7px 6px; overflow:hidden;">
+        <div style="height:6px; border-radius:2px; background: var(--c-border,#E3DDD0);"></div>
+        <div style="height:14px; border-radius:3px; background:#FFD86B;"></div>
+        <div style="height:14px; border-radius:3px; background: var(--c-border,#E3DDD0);"></div>
+        <div style="height:14px; border-radius:3px; background: var(--c-border,#E3DDD0);"></div>
+      </div>
+      <div style="flex:1 1 auto;">
+        <div style="font-size:14px; font-weight:600; margin-bottom:3px;">Что снимать</div>
+        <div style="font-size:13px; line-height:1.4; color: var(--c-text-2,#6B665C); text-wrap:pretty;">Экран «Категории кэшбэка» в приложении банка, где видны названия категорий и проценты. По одному скриншоту на банк.</div>
+      </div>
+    </div>
+
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <button style="width:100%; min-height:150px; border-radius:14px; border:1.5px dashed var(--c-border,#E3DDD0); background: var(--c-surface,#F7F5F0); color: var(--c-text,#1A1814); font-family:inherit; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" style="color: var(--c-text-2,#6B665C);"><rect x="3" y="4" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M3 16l5-4 4 3 3-2.5 6 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="9" r="1.6" fill="currentColor"/></svg>
+        <span style="font-size:16px; font-weight:600;">Выбрать из галереи</span>
+        <span style="font-size:13px; color: var(--c-text-2,#6B665C);">До 15 изображений</span>
+      </button>
+    </sc-if>
+
+    <sc-if value="{{ hasFiles }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between;">
+          <div style="font-size:14px; font-weight:600;">Выбрано</div>
+          <sc-if value="{{ atLimit }}" hint-placeholder-val="{{ false }}"><div style="font-size:12px; font-weight:500; color: var(--c-brand-pressed,#E0A800);">Достигнут лимит 15</div></sc-if>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+          <sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="6">
+            <div style="position:relative; aspect-ratio:3/4; border-radius:10px; overflow:hidden; background: {{ t.bg }}; border:1px solid var(--c-border,#E3DDD0); display:flex; flex-direction:column; gap:4px; padding:9px 7px;">
+              <div style="height:7px; border-radius:2px; background:rgba(0,0,0,0.10);"></div>
+              <div style="height:16px; border-radius:3px; background: {{ t.accent }};"></div>
+              <div style="height:16px; border-radius:3px; background:rgba(0,0,0,0.10);"></div>
+              <div style="height:16px; border-radius:3px; background:rgba(0,0,0,0.10);"></div>
+              <div style="position:absolute; top:5px; right:5px; width:24px; height:24px; border-radius:999px; background:rgba(20,18,14,0.72); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+              </div>
+              <div style="position:absolute; left:6px; bottom:5px; font-size:10px; font-weight:600; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.5);">{{ t.name }}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ canAdd }}" hint-placeholder-val="{{ true }}">
+            <button style="aspect-ratio:3/4; border-radius:10px; border:1.5px dashed var(--c-border,#E3DDD0); background: var(--c-surface,#F7F5F0); color: var(--c-text-2,#6B665C); cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+              <span style="font-size:11px; font-weight:600;">Ещё</span>
+            </button>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <div style="flex:0 0 auto; padding:12px 20px 24px;">
+    <button style="width:100%; min-height:52px; border-radius:10px; border:none; background: {{ ctaBg }}; color: {{ ctaFg }}; font-family:inherit; font-size:16px; font-weight:600; cursor: {{ ctaCursor }};">{{ ctaText }}</button>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 360, &quot;height&quot;: 780 },
+  &quot;theme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;light&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;state&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;selected&quot;, &quot;empty&quot;, &quot;limit&quot;], &quot;default&quot;: &quot;selected&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const state = this.props.state || 'selected';
+    const banks = [
+      { name:'Сбербанк', bg:'#E7F5EC', accent:'#21A038' },
+      { name:'Альфа', bg:'#FBE7E5', accent:'#EF3124' },
+      { name:'Т-Банк', bg:'#EAEAEC', accent:'#1C1C1E' },
+      { name:'ВТБ', bg:'#E4F3FB', accent:'#009FDF' },
+      { name:'Райффайзен', bg:'#FFFBE0', accent:'#C9A800' },
+      { name:'Газпром', bg:'#E5E8F1', accent:'#1F2A63' },
+      { name:'Озон', bg:'#E4ECFF', accent:'#005BFF' },
+      { name:'Яндекс', bg:'#FDE7E3', accent:'#FC3F1D' },
+      { name:'Почта', bg:'#F0E9F8', accent:'#7B3FBF' },
+      { name:'Совком', bg:'#E3EFF7', accent:'#005CAB' },
+      { name:'МКБ', bg:'#E7F3EA', accent:'#00953B' },
+      { name:'ОТП', bg:'#E9F0E5', accent:'#5C8A2B' },
+      { name:'Уралсиб', bg:'#EAF1EE', accent:'#2E6E5A' },
+      { name:'Хоум', bg:'#FBEAE0', accent:'#D06A2C' },
+      { name:'Русский Ст.', bg:'#E9E6F2', accent:'#463C7A' }
+    ];
+    let count = state === 'empty' ? 0 : state === 'limit' ? 15 : 6;
+    const thumbs = banks.slice(0, count);
+    const isEmpty = count === 0;
+    const atLimit = count >= 15;
+    return {
+      themeClass: this.props.theme === 'dark' ? 'mc-dark' : '',
+      selected: count,
+      countColor: atLimit ? 'var(--c-brand-pressed,#E0A800)' : 'var(--c-text-2,#6B665C)',
+      isEmpty, hasFiles: !isEmpty, atLimit, canAdd: !atLimit,
+      thumbs,
+      ctaText: isEmpty ? 'Сначала выберите скриншоты' : ('Распознать · ' + count),
+      ctaBg: isEmpty ? 'var(--c-surface-2,#EFEBE2)' : 'var(--c-brand,#FFC000)',
+      ctaFg: isEmpty ? 'var(--c-text-2,#6B665C)' : 'var(--c-on-brand,#1F1A05)',
+      ctaCursor: isEmpty ? 'not-allowed' : 'pointer'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<sc-if value="{{ isNormal }}" hint-placeholder-val="{{ true }}">
+  <div style="position:relative; width:100%; aspect-ratio:1.586 / 1; border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; background: {{ bankColor }}; color: {{ onColor }};">
+    <div style="display:flex; flex-direction:column; gap:2px;">
+      <div style="font-size:16px; font-weight:600; line-height:1.2;">{{ bankName }}</div>
+      <div style="font-size:14px; font-weight:400; line-height:1.3; color: {{ onColorSoft }};">{{ productName }}</div>
+    </div>
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:8px;">
+      <div style="font-size:12px; font-weight:500; color: {{ onColorSoft }};">кэшбэк до</div>
+      <div style="font-size:40px; font-weight:800; line-height:0.9;">{{ pctText }}</div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isWinner }}" hint-placeholder-val="{{ false }}">
+  <div style="position:relative; width:100%; aspect-ratio:1.586 / 1; border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; background: {{ bankColor }}; color: {{ onColor }}; box-shadow: 0 0 0 4px rgba(255,192,0,0.30), 0 0 26px 2px rgba(255,192,0,0.35), 0 16px 34px rgba(0,0,0,0.28);">
+    <div style="display:flex; flex-direction:column; gap:3px;">
+      <div style="font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color: {{ onColorSoft }};">Платите этой</div>
+      <div style="font-size:22px; font-weight:700; line-height:1.15;">{{ bankName }}</div>
+      <div style="font-size:14px; font-weight:400; color: {{ onColorSoft }};">{{ productName }}</div>
+    </div>
+    <div style="align-self:flex-start; display:inline-flex; align-items:baseline; gap:2px; background: var(--c-brand,#FFC000); color: var(--c-on-brand,#1F1A05); padding:6px 14px; border-radius:10px;">
+      <span style="font-size:40px; font-weight:800; line-height:0.95;">{{ pctText }}</span>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isLoser }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex; align-items:center; gap:12px; min-height:52px; padding:8px 12px; border-radius:12px; background: var(--c-surface,#F7F5F0);">
+    <div style="width:34px; height:34px; border-radius:8px; flex:0 0 auto; background: {{ bankColor }};"></div>
+    <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:1px;">
+      <div style="font-size:14px; font-weight:600; line-height:1.2; color: var(--c-text,#1A1814); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ bankName }}</div>
+      <div style="font-size:12px; font-weight:400; color: var(--c-text-2,#6B665C); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ productName }}</div>
+    </div>
+    <div style="font-size:16px; font-weight:700; color: var(--c-text-2,#6B665C); flex:0 0 auto;">{{ pctText }}</div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 300, &quot;height&quot;: 200 },
+  &quot;variant&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;normal&quot;, &quot;winner&quot;, &quot;loser&quot;], &quot;default&quot;: &quot;normal&quot;, &quot;tsType&quot;: &quot;'normal'|'winner'|'loser'&quot; },
+  &quot;bankName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Сбербанк&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;productName&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;СберКарта&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;percent&quot;: { &quot;editor&quot;: &quot;float&quot;, &quot;default&quot;: 5, &quot;tsType&quot;: &quot;number&quot; },
+  &quot;bankColor&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#21A038&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const variant = p.variant || 'normal';
+    const bankColor = p.bankColor || '#3B3729';
+    const onColor = this.onColorFor(bankColor);
+    const pctNum = Number(p.percent);
+    const pct = Number.isFinite(pctNum) ? pctNum : 0;
+    const pctText = (Number.isInteger(pct) ? pct : pct.toFixed(1)) + '%';
+    return {
+      variant, bankColor, onColor, pctText,
+      bankName: p.bankName || 'Банк',
+      productName: p.productName || '',
+      isNormal: variant === 'normal',
+      isWinner: variant === 'winner',
+      isLoser: variant === 'loser',
+      onColorSoft: onColor === '#FFFFFF' ? 'rgba(255,255,255,0.72)' : 'rgba(31,26,5,0.62)'
+    };
+  }
+  onColorFor(hex) {
+    try {
+      const c = String(hex).replace('#', '');
+      const r = parseInt(c.slice(0, 2), 16) / 255;
+      const g = parseInt(c.slice(2, 4), 16) / 255;
+      const b = parseInt(c.slice(4, 6), 16) / 255;
+      const lin = x => x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+      const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+      return L > 0.5 ? '#1F1A05' : '#FFFFFF';
+    } catch (e) { return '#FFFFFF'; }
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+.mc-dark{--c-bg:#16150F;--c-surface:#201E16;--c-surface-2:#2B2820;--c-border:#3B3729;--c-text:#F2EEE3;--c-text-2:#9A9384;--c-brand:#FFC72E;--c-brand-pressed:#E0A800;--c-on-brand:#1F1A05;--c-brand-sub:#3A2F0C;--c-success:#4ADE80;--c-error:#F87171;}
+</style>
+</helmet>
+<div class="{{ themeClass }}" style="width:360px; height:780px; display:flex; flex-direction:column; background: var(--c-bg,#FFFFFF); color: var(--c-text,#1A1814); border-radius:30px; overflow:hidden; font-family:'Golos Text','Manrope',sans-serif; box-shadow: inset 0 0 0 1px var(--c-border,#E3DDD0);">
+
+  <div style="height:36px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:13px; font-weight:600;">
+    <span>9:41</span>
+    <span style="display:inline-flex; align-items:center; gap:6px;">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 3.2C10.4 3.2 12.1 3.9 13.4 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5.2 6.4C6.1 5.6 7.3 5.1 8.5 5.1C9.7 5.1 10.9 5.6 11.8 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="8.6" r="1.2" fill="currentColor"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1.6" width="20" height="8.8" rx="2.4" stroke="currentColor" stroke-width="1.4"/><rect x="2.8" y="3.4" width="14" height="5.2" rx="1.2" fill="currentColor"/><rect x="22.4" y="4" width="1.6" height="4" rx="0.8" fill="currentColor"/></svg>
+    </span>
+  </div>
+
+  <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; padding:2px 8px 6px;">
+    <button style="width:48px; height:48px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color: var(--c-text,#1A1814); cursor:pointer;" aria-label="Назад">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div style="font-size:14px; font-weight:500; color: var(--c-text-2,#6B665C);">Шаг {{ stepNum }} из 2</div>
+  </div>
+
+  <!-- ШАГ 1: выбор банка -->
+  <sc-if value="{{ isBankStep }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:0 0 auto; padding:2px 24px 12px;">
+      <h1 style="margin:0 0 14px; font-size:24px; font-weight:700; line-height:1.15; letter-spacing:-0.01em;">Выберите банк</h1>
+      <div style="display:flex; align-items:center; gap:10px; min-height:48px; padding:0 14px; border-radius:10px; border:1.5px solid var(--c-border,#E3DDD0); background: var(--c-surface,#F7F5F0);">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style="color: var(--c-text-2,#6B665C); flex:0 0 auto;"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span style="font-size:16px; color: var(--c-text,#1A1814);">{{ query }}</span>
+        <span style="width:1.5px; height:20px; background: var(--c-text,#1A1814); animation:none;"></span>
+      </div>
+    </div>
+    <div style="flex:1 1 auto; overflow-y:auto; padding:2px 20px 16px;">
+      <sc-if value="{{ hasBankResults }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column;">
+          <sc-for list="{{ banks }}" as="b" hint-placeholder-count="6">
+            <button style="display:flex; align-items:center; gap:12px; width:100%; min-height:56px; padding:8px 8px; background:transparent; border:none; border-bottom:1px solid var(--c-border,#E3DDD0); cursor:pointer; text-align:left; font-family:inherit;">
+              <span style="width:36px; height:36px; border-radius:8px; flex:0 0 auto; background: {{ b.color }};"></span>
+              <span style="flex:1 1 auto; font-size:16px; font-weight:500; color: var(--c-text,#1A1814);">{{ b.name }}</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; color: var(--c-text-2,#6B665C);"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noBankResults }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; padding:40px 24px;">
+          <div style="font-size:16px; font-weight:600;">Банк не найден</div>
+          <div style="font-size:14px; line-height:1.4; color: var(--c-text-2,#6B665C); text-wrap:pretty;">Такого банка нет в списке. Добавьте его вручную — укажите название сами.</div>
+          <button style="margin-top:6px; min-height:48px; padding:0 20px; border-radius:10px; border:1.5px solid var(--c-border,#E3DDD0); background:transparent; color: var(--c-text,#1A1814); font-family:inherit; font-size:15px; font-weight:600; cursor:pointer;">Добавить «{{ query }}»</button>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- ШАГ 2: реквизиты продукта -->
+  <sc-if value="{{ isDetailsStep }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1 1 auto; overflow-y:auto; padding:2px 24px 16px; display:flex; flex-direction:column; gap:20px;">
+      <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:12px; background: var(--c-surface,#F7F5F0);">
+        <span style="width:40px; height:40px; border-radius:9px; flex:0 0 auto; background:#EF3124;"></span>
+        <div style="flex:1 1 auto; min-width:0;"><div style="font-size:16px; font-weight:600;">Альфа-Банк</div><div style="font-size:13px; color: var(--c-text-2,#6B665C);">Выбранный банк</div></div>
+        <button style="min-height:40px; padding:0 12px; background:transparent; border:none; color: var(--c-text-2,#6B665C); font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">Изменить</button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-size:13px; font-weight:500; color: var(--c-text-2,#6B665C);">Название продукта</label>
+        <div style="min-height:48px; padding:0 14px; border-radius:10px; border:1.5px solid var(--c-brand,#FFC000); background: var(--c-surface,#F7F5F0); display:flex; align-items:center; font-size:16px; color: var(--c-text,#1A1814);">Alfa Travel<span style="width:1.5px; height:20px; margin-left:1px; background: var(--c-text,#1A1814);"></span></div>
+        <div style="font-size:13px; color: var(--c-text-2,#6B665C);">Как карта называется в приложении банка.</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <label style="font-size:13px; font-weight:500; color: var(--c-text-2,#6B665C);">Базовый процент кэшбэка</label>
+        <div style="min-height:48px; padding:0 14px; border-radius:10px; border:1.5px solid var(--c-border,#E3DDD0); background: var(--c-surface,#F7F5F0); display:flex; align-items:center; justify-content:space-between; font-size:16px; color: var(--c-text,#1A1814);"><span>1,5</span><span style="color: var(--c-text-2,#6B665C);">%</span></div>
+        <div style="font-size:13px; color: var(--c-text-2,#6B665C);">Сколько возвращается на любые покупки без выбранной категории.</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="flex:0 0 auto; padding:12px 24px 24px;">
+    <button style="width:100%; min-height:52px; border-radius:10px; border:none; background: var(--c-brand,#FFC000); color: var(--c-on-brand,#1F1A05); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">{{ cta }}</button>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 360, &quot;height&quot;: 780 },
+  &quot;theme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;light&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;step&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;bank&quot;, &quot;noresults&quot;, &quot;details&quot;], &quot;default&quot;: &quot;details&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const step = this.props.step || 'bank';
+    const isBankStep = step === 'bank';
+    const noResults = step === 'noresults';
+    const C = { sber:'#21A038', alfa:'#EF3124', tb:'#1C1C1E', vtb:'#009FDF', raif:'#FEE600',
+      gpb:'#1F2A63', ozon:'#005BFF', ya:'#FC3F1D', pochta:'#7B3FBF', sovkom:'#005CAB', mkb:'#00953B' };
+    const allBanks = [
+      { name:'Сбербанк', color:C.sber }, { name:'Альфа-Банк', color:C.alfa },
+      { name:'Т-Банк', color:C.tb }, { name:'ВТБ', color:C.vtb },
+      { name:'Райффайзен Банк', color:C.raif }, { name:'Газпромбанк', color:C.gpb },
+      { name:'Озон Банк', color:C.ozon }, { name:'МКБ', color:C.mkb }
+    ];
+    const query = noResults ? 'Тинькоф' : '';
+    const banks = noResults ? [] : allBanks;
+    return {
+      themeClass: this.props.theme === 'dark' ? 'mc-dark' : '',
+      isBankStep: isBankStep || noResults,
+      isDetailsStep: step === 'details',
+      hasBankResults: banks.length > 0,
+      noBankResults: noResults,
+      banks, query,
+      stepNum: step === 'details' ? 2 : 1,
+      cta: step === 'details' ? 'Сохранить карту' : 'Далее'
+    };
+  }
+}
+</script>
+</body>
+</html>

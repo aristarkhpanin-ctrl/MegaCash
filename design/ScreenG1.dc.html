@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+.mc-dark{--c-bg:#16150F;--c-surface:#201E16;--c-surface-2:#2B2820;--c-border:#3B3729;--c-text:#F2EEE3;--c-text-2:#9A9384;--c-brand:#FFC72E;--c-brand-pressed:#E0A800;--c-on-brand:#1F1A05;--c-brand-sub:#3A2F0C;--c-success:#4ADE80;--c-error:#F87171;}
+</style>
+</helmet>
+<div class="{{ themeClass }}" style="position:relative; width:360px; height:780px; display:flex; flex-direction:column; background: var(--c-bg,#FFFFFF); color: var(--c-text,#1A1814); border-radius:30px; overflow:hidden; font-family:'Golos Text','Manrope',sans-serif; box-shadow: inset 0 0 0 1px var(--c-border,#E3DDD0);">
+
+  <div style="height:36px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:13px; font-weight:600;">
+    <span>9:41</span>
+    <span style="display:inline-flex; align-items:center; gap:6px;">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 3.2C10.4 3.2 12.1 3.9 13.4 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5.2 6.4C6.1 5.6 7.3 5.1 8.5 5.1C9.7 5.1 10.9 5.6 11.8 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="8.6" r="1.2" fill="currentColor"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1.6" width="20" height="8.8" rx="2.4" stroke="currentColor" stroke-width="1.4"/><rect x="2.8" y="3.4" width="14" height="5.2" rx="1.2" fill="currentColor"/><rect x="22.4" y="4" width="1.6" height="4" rx="0.8" fill="currentColor"/></svg>
+    </span>
+  </div>
+
+  <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px; padding:2px 8px 8px;">
+    <button style="width:48px; height:48px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color: var(--c-text,#1A1814); cursor:pointer;" aria-label="Назад">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div style="font-size:20px; font-weight:700; letter-spacing:-0.01em;">Настройки</div>
+  </div>
+
+  <div style="flex:1 1 auto; overflow-y:auto; padding:4px 20px 18px; display:flex; flex-direction:column; gap:22px;">
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color: var(--c-text-2,#6B665C); padding-left:2px;">Оформление</div>
+      <div style="display:flex; gap:6px; padding:4px; border-radius:12px; background: var(--c-surface,#F7F5F0); border:1px solid var(--c-border,#E3DDD0);">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 4px; border-radius:9px; background: {{ lightSel }}; color: {{ lightTxt }};">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M4.4 4.4l1.6 1.6M18 18l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.4 19.6l1.6-1.6M18 6l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span style="font-size:13px; font-weight:600;">Светлая</span>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 4px; border-radius:9px; background: {{ darkSel }}; color: {{ darkTxt }};">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8 8 0 019.5 4 7 7 0 1020 14.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <span style="font-size:13px; font-weight:600;">Тёмная</span>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 4px; border-radius:9px; background: {{ autoSel }}; color: {{ autoTxt }};">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4.5" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 20h8M12 16.5V20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span style="font-size:13px; font-weight:600;">Системная</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color: var(--c-text-2,#6B665C); padding-left:2px;">Данные</div>
+      <div style="border-radius:12px; overflow:hidden; border:1px solid var(--c-border,#E3DDD0);">
+        <button style="display:flex; align-items:center; gap:12px; width:100%; min-height:56px; padding:10px 14px; background: var(--c-surface,#F7F5F0); border:none; border-bottom:1px solid var(--c-border,#E3DDD0); cursor:pointer; text-align:left; font-family:inherit;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; color: var(--c-text,#1A1814);"><path d="M12 3v11m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17v2a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span style="flex:1 1 auto;"><span style="display:block; font-size:16px; font-weight:500; color: var(--c-text,#1A1814);">Сохранить копию</span><span style="display:block; font-size:13px; color: var(--c-text-2,#6B665C);">Файл с картами и настройками</span></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; color: var(--c-text-2,#6B665C);"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button style="display:flex; align-items:center; gap:12px; width:100%; min-height:56px; padding:10px 14px; background: var(--c-surface,#F7F5F0); border:none; cursor:pointer; text-align:left; font-family:inherit;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; color: var(--c-text,#1A1814);"><path d="M12 21V10m0 0l-4 4m4-4l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 7V5a2 2 0 012-2h10a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span style="flex:1 1 auto;"><span style="display:block; font-size:16px; font-weight:500; color: var(--c-text,#1A1814);">Восстановить из копии</span><span style="display:block; font-size:13px; color: var(--c-text-2,#6B665C);">Заменит текущие данные</span></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; color: var(--c-text-2,#6B665C);"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="font-size:12px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color: var(--c-text-2,#6B665C); padding-left:2px;">Ещё</div>
+      <div style="border-radius:12px; overflow:hidden; border:1px solid var(--c-border,#E3DDD0);">
+        <button style="display:flex; align-items:center; gap:12px; width:100%; min-height:56px; padding:10px 14px; background: var(--c-surface,#F7F5F0); border:none; border-bottom:1px solid var(--c-border,#E3DDD0); cursor:pointer; text-align:left; font-family:inherit;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; color: var(--c-text,#1A1814);"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5M12 7.6h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span style="flex:1 1 auto; font-size:16px; font-weight:500; color: var(--c-text,#1A1814);">О приложении</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; color: var(--c-text-2,#6B665C);"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button style="display:flex; align-items:center; gap:12px; width:100%; min-height:56px; padding:10px 14px; background: var(--c-surface,#F7F5F0); border:none; cursor:pointer; text-align:left; font-family:inherit;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; color: var(--c-error,#C5221F);"><path d="M4 7h16M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span style="flex:1 1 auto; font-size:16px; font-weight:500; color: var(--c-error,#C5221F);">Сбросить все данные</span>
+        </button>
+      </div>
+      <div style="font-size:12px; line-height:1.4; color: var(--c-text-2,#6B665C); padding:0 2px; text-wrap:pretty;">Сброс удалит все карты и настройки без возможности восстановить, если нет копии.</div>
+    </div>
+
+  </div>
+
+  <sc-if value="{{ banner }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:0 0 auto; height:56px; display:flex; align-items:center; justify-content:center; padding:3px 20px;">
+      <div style="width:100%; max-width:320px; height:50px; border-radius:8px; border:1px dashed var(--c-border,#E3DDD0); background: var(--c-surface-2,#EFEBE2); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:500; color: var(--c-text-2,#6B665C);">место под рекламу · 320×50</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showConfirm }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; background:rgba(10,9,6,0.5); display:flex; align-items:center; justify-content:center; padding:28px;">
+      <div style="width:100%; background: var(--c-bg,#FFFFFF); border-radius:18px; padding:24px 22px; display:flex; flex-direction:column; gap:8px; box-shadow:0 20px 50px -12px rgba(0,0,0,0.5);">
+        <div style="width:48px; height:48px; border-radius:12px; background: var(--c-surface,#F7F5F0); display:flex; align-items:center; justify-content:center; color: var(--c-error,#C5221F); margin-bottom:4px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 8.5v4.5M12 16.5h.01M10.3 3.9L2.8 17a2 2 0 001.7 3h15a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="font-size:19px; font-weight:700; line-height:1.2;">Сбросить все данные?</div>
+        <div style="font-size:14px; line-height:1.45; color: var(--c-text-2,#6B665C); text-wrap:pretty;">Будут удалены все карты, выбранные категории и настройки. Отменить это действие нельзя.</div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
+          <button style="width:100%; min-height:48px; border-radius:10px; border:none; background: var(--c-error,#C5221F); color:#fff; font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">Сбросить</button>
+          <button style="width:100%; min-height:48px; border-radius:10px; border:1.5px solid var(--c-border,#E3DDD0); background:transparent; color: var(--c-text,#1A1814); font-family:inherit; font-size:16px; font-weight:600; cursor:pointer;">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 360, &quot;height&quot;: 780 },
+  &quot;theme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;light&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;state&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;default&quot;, &quot;reset-confirm&quot;], &quot;default&quot;: &quot;default&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;banner&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const theme = this.props.theme === 'dark' ? 'dark' : 'light';
+    const state = this.props.state || 'default';
+    const selBg = 'var(--c-brand,#FFC000)', selTx = 'var(--c-on-brand,#1F1A05)';
+    const offBg = 'transparent', offTx = 'var(--c-text-2,#6B665C)';
+    // "Системная" reflects the active theme when theme-driven; here light/dark map to explicit picks
+    return {
+      themeClass: theme === 'dark' ? 'mc-dark' : '',
+      banner: this.props.banner !== false,
+      showConfirm: state === 'reset-confirm',
+      lightSel: theme === 'light' ? selBg : offBg, lightTxt: theme === 'light' ? selTx : offTx,
+      darkSel: theme === 'dark' ? selBg : offBg, darkTxt: theme === 'dark' ? selTx : offTx,
+      autoSel: offBg, autoTxt: offTx
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+.mc-dark{--c-bg:#16150F;--c-surface:#201E16;--c-surface-2:#2B2820;--c-border:#3B3729;--c-text:#F2EEE3;--c-text-2:#9A9384;--c-brand:#FFC72E;--c-brand-pressed:#E0A800;--c-on-brand:#1F1A05;--c-brand-sub:#3A2F0C;--c-success:#4ADE80;--c-error:#F87171;}
+</style>
+</helmet>
+<div class="{{ themeClass }}" style="width:360px; height:780px; display:flex; flex-direction:column; background: var(--c-bg,#FFFFFF); color: var(--c-text,#1A1814); border-radius:30px; overflow:hidden; font-family:'Golos Text','Manrope',sans-serif; box-shadow: inset 0 0 0 1px var(--c-border,#E3DDD0);">
+
+  <div style="height:36px; flex:0 0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:13px; font-weight:600;">
+    <span>9:41</span>
+    <span style="display:inline-flex; align-items:center; gap:6px;">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="none"><path d="M8.5 3.2C10.4 3.2 12.1 3.9 13.4 5.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5.2 6.4C6.1 5.6 7.3 5.1 8.5 5.1C9.7 5.1 10.9 5.6 11.8 6.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8.5" cy="8.6" r="1.2" fill="currentColor"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="1" y="1.6" width="20" height="8.8" rx="2.4" stroke="currentColor" stroke-width="1.4"/><rect x="2.8" y="3.4" width="14" height="5.2" rx="1.2" fill="currentColor"/><rect x="22.4" y="4" width="1.6" height="4" rx="0.8" fill="currentColor"/></svg>
+    </span>
+  </div>
+
+  <div style="flex:0 0 auto; display:flex; align-items:center; padding:2px 12px 0;">
+    <button style="width:48px; height:48px; flex:0 0 auto; display:flex; align-items:center; justify-content:center; background:transparent; border:none; color: var(--c-text,#1A1814); cursor:pointer;" aria-label="Назад">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div style="flex:1 1 auto; overflow-y:auto; overflow-x:hidden; padding:6px 20px 28px;">
+
+    <div style="display:flex; flex-direction:column; gap:3px; margin-bottom:18px;">
+      <div style="font-size:12px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color: var(--c-text-2,#6B665C);">Чем платить</div>
+      <div style="font-size:26px; font-weight:700; line-height:1.12; letter-spacing:-0.01em; text-wrap:pretty;">{{ category }}</div>
+    </div>
+
+    <sc-if value="{{ hasWinner }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:8px 4px 4px;">
+        <dc-import name="BankCard" variant="winner" bank-name="{{ winner.bankName }}" product-name="{{ winner.productName }}" percent="{{ winner.percent }}" bank-color="{{ winner.bankColor }}" hint-size="100%,190px"></dc-import>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ noWinner }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:2px 0 4px; display:flex; flex-direction:column; gap:14px;">
+        <div style="padding:14px 16px; border-radius:12px; background: var(--c-brand-sub,#FFF4D6); display:flex; gap:10px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex:0 0 auto; margin-top:1px;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5M12 7.6h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <div style="font-size:14px; font-weight:400; line-height:1.4;">Ни одна карта не даёт повышенный кэшбэк в этой категории. Ниже — карта с лучшим базовым процентом.</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="font-size:12px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color: var(--c-text-2,#6B665C);">Лучший базовый процент</div>
+          <dc-import name="BankCard" variant="normal" bank-name="{{ baseCard.bankName }}" product-name="{{ baseCard.productName }}" percent="{{ baseCard.percent }}" bank-color="{{ baseCard.bankColor }}" hint-size="100%,180px"></dc-import>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="margin:22px 0 10px; font-size:12px; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color: var(--c-text-2,#6B665C);">{{ losersLabel }}</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <sc-for list="{{ losers }}" as="l" hint-placeholder-count="4">
+        <dc-import name="BankCard" variant="loser" bank-name="{{ l.bankName }}" product-name="{{ l.productName }}" percent="{{ l.percent }}" bank-color="{{ l.bankColor }}" hint-size="100%,52px"></dc-import>
+      </sc-for>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 360, &quot;height&quot;: 780 },
+  &quot;theme&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;light&quot;, &quot;tsType&quot;: &quot;string&quot; },
+  &quot;state&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;normal&quot;, &quot;nowinner&quot;, &quot;overflow&quot;], &quot;default&quot;: &quot;normal&quot;, &quot;tsType&quot;: &quot;string&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const state = this.props.state || 'normal';
+    const themeClass = this.props.theme === 'dark' ? 'mc-dark' : '';
+    const C = { sber:'#21A038', alfa:'#EF3124', tb:'#1C1C1E', vtb:'#009FDF', raif:'#FEE600',
+      gpb:'#1F2A63', ozon:'#005BFF', ya:'#FC3F1D', pochta:'#7B3FBF', sovkom:'#005CAB', mkb:'#00953B' };
+    if (state === 'nowinner') {
+      return {
+        themeClass,
+        category: 'Цветы',
+        hasWinner: false, noWinner: true,
+        baseCard: { bankName:'Райффайзен', productName:'Кэшбэк', percent:1.5, bankColor:C.raif },
+        losersLabel: 'Остальные карты',
+        losers: [
+          { bankName:'Сбербанк', productName:'СберКарта', percent:1, bankColor:C.sber },
+          { bankName:'Альфа-Банк', productName:'Alfa Travel', percent:1, bankColor:C.alfa },
+          { bankName:'Т-Банк', productName:'Black', percent:1, bankColor:C.tb },
+          { bankName:'ВТБ', productName:'Мультикарта', percent:1, bankColor:C.vtb }
+        ]
+      };
+    }
+    if (state === 'overflow') {
+      return {
+        themeClass,
+        category: 'Ювелирные украшения, часы и предметы роскоши',
+        hasWinner: true, noWinner: false,
+        winner: { bankName:'Альфа-Банк', productName:'Alfa Travel Premium', percent:9, bankColor:C.alfa },
+        losersLabel: 'Остальные карты · 9',
+        losers: [
+          { bankName:'Сбербанк', productName:'СберКарта', percent:5, bankColor:C.sber },
+          { bankName:'ВТБ', productName:'Мультикарта', percent:3, bankColor:C.vtb },
+          { bankName:'Т-Банк', productName:'Black', percent:2, bankColor:C.tb },
+          { bankName:'Райффайзен', productName:'Кэшбэк', percent:1.5, bankColor:C.raif },
+          { bankName:'Газпромбанк', productName:'Умная карта', percent:2, bankColor:C.gpb },
+          { bankName:'Озон Банк', productName:'Ozon Card', percent:1, bankColor:C.ozon },
+          { bankName:'Яндекс Пэй', productName:'Пэй', percent:1, bankColor:C.ya },
+          { bankName:'Почта Банк', productName:'Пятёрочка', percent:1, bankColor:C.pochta },
+          { bankName:'Совкомбанк', productName:'Халва', percent:1, bankColor:C.sovkom }
+        ]
+      };
+    }
+    return {
+      themeClass,
+      category: 'Супермаркеты',
+      hasWinner: true, noWinner: false,
+      winner: { bankName:'Сбербанк', productName:'СберКарта', percent:5, bankColor:C.sber },
+      losersLabel: 'Остальные карты',
+      losers: [
+        { bankName:'Альфа-Банк', productName:'Alfa Travel', percent:1, bankColor:C.alfa },
+        { bankName:'Т-Банк', productName:'Black', percent:1, bankColor:C.tb },
+        { bankName:'ВТБ', productName:'Мультикарта', percent:1, bankColor:C.vtb },
+        { bankName:'Райффайзен', productName:'Кэшбэк', percent:1.5, bankColor:C.raif }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
