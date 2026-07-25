@@ -16,13 +16,27 @@ dependencies:
   # Навигация
   go_router: ^16.0.0
 
+  # Локальная база.
+  #
+  # Официальный `isar` заброшен с апреля 2023 и объявляет `sdk: <3.0.0` —
+  # с Dart 3.12 он не собирается вовсе. `isar_community` — поддерживаемый
+  # форк с тем же API; импорты остаются вида `package:isar_community/isar.dart`.
+  isar_community: ^3.3.2
+  isar_community_flutter_libs: ^3.3.2
+  path_provider: ^2.1.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  isar_community_generator: ^3.3.2
+  build_runner: ^2.4.13
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/categories.json
 
   fonts:
     - family: Golos Text

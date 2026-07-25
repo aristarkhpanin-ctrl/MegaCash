@@ -70,7 +70,9 @@ GoRouter createRouter() {
       GoRoute(
         parentNavigatorKey: _rootKey,
         path: Routes.cardEdit,
-        builder: (context, state) => const CardEditScreen(),
+        builder: (context, state) => CardEditScreen(
+          cardId: state.uri.queryParameters['id'] ?? '',
+        ),
       ),
 
       // Группа Б — месячная настройка.
