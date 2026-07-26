@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
@@ -33,12 +35,48 @@ android {
         }
     }
 
+    // Боевой ключ описан в android/key.properties — файл в репозиторий
+    // не попадает и попасть не должен: с ним кто угодно выпустит
+    // обновление приложения от вашего имени. Если файла нет, сборка
+    // подписывается отладочным ключом и остаётся пригодной для проверки
+    // на телефоне, но не для публикации.
+    val keystoreProperties = Properties()
+    val keystoreFile = rootProject.file("key.properties")
+    val hasReleaseKey = keystoreFile.exists()
+    if (hasReleaseKey) {
+        keystoreFile.inputStream().use { keystoreProperties.load(it) }
+    }
+
+    signingConfigs {
+        if (hasReleaseKey) {
+            create("release") {
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                val storePath = keystoreProperties.getProperty("storeFile")
+                if (storePath != null) {
+                    storeFile = rootProject.file(storePath)
+                }
+                storePassword = keystoreProperties.getProperty("storePassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // Боевой ключ подключается на шаге 8, перед публикацией.
-            // До тех пор release подписывается отладочным ключом,
-            // чтобы `flutter run --release` работал.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (hasReleaseKey) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
+
+            // Сжатие кода и ресурсов: APK меньше, а имена классов
+            // в стектрейсах всё равно не нужны — крашлитики нет.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }

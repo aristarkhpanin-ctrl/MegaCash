@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../ads/ad_banner_slot.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
@@ -21,7 +22,6 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final c = context.colors;
     final monthKey = ref.watch(currentMonthProvider);
     final tiles = ref.watch(activeCategoriesProvider).value ??
         const <ActiveCategory>[];
@@ -85,7 +85,7 @@ class HomeScreen extends ConsumerWidget {
                   },
                 ),
               ),
-            _AdBannerPlaceholder(color: c.surface2),
+            const AdBannerSlot(),
           ],
         ),
       ),
@@ -274,29 +274,3 @@ class _Empty extends StatelessWidget {
   }
 }
 
-/// Место под баннер. Настоящая реклама подключается на шаге 8, но место
-/// под неё занято с самого начала: иначе вёрстка на этом шаге поедет.
-class _AdBannerPlaceholder extends StatelessWidget {
-  const _AdBannerPlaceholder({required this.color});
-
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: Dimens.adBannerReservedHeight,
-      child: Center(
-        child: Container(
-          width: double.infinity,
-          height: Dimens.adBannerHeight,
-          margin: const EdgeInsets.symmetric(horizontal: Spacing.screen),
-          constraints: const BoxConstraints(maxWidth: Dimens.adBannerWidth),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: Radii.fieldBorder,
-          ),
-        ),
-      ),
-    );
-  }
-}

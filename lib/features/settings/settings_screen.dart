@@ -9,6 +9,9 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/theme_mode_provider.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../data/backup_service.dart';
 import '../../data/providers.dart';
 
 /// Г1 · Настройки.
@@ -75,21 +78,30 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: Spacing.x6),
             const _SectionLabel('Данные'),
             const SizedBox(height: Spacing.x2 + 2),
-            const _RowGroup(
+            _RowGroup(
               children: [
                 _SettingsRow(
                   icon: Icons.file_download_outlined,
                   title: 'Сохранить копию',
-                  subtitle: 'Файл с картами и настройками',
-                  enabled: false,
+                  subtitle: 'Файл с картами и категориями',
+                  onTap: () => _exportBackup(context, ref),
                 ),
                 _SettingsRow(
                   icon: Icons.file_upload_outlined,
                   title: 'Восстановить из копии',
                   subtitle: 'Заменит текущие данные',
-                  enabled: false,
+                  onTap: () => _importBackup(context, ref),
                 ),
               ],
+            ),
+            const SizedBox(height: Spacing.x2 + 2),
+            Text(
+              'Данные хранятся только на этом телефоне. Копия — '
+              'единственный способ не потерять их вместе с ним.',
+              style: AppText.label.copyWith(
+                color: c.textSecondary,
+                height: 1.4,
+              ),
             ),
 
             const SizedBox(height: Spacing.x6),
@@ -144,6 +156,87 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _exportBackup(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final path = await ref.read(backupServiceProvider).exportToFile();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('Копия сохранена: ${path.split('/').last}'),
+        action: SnackBarAction(
+          label: 'Поделиться',
+          onPressed: () => SharePlus.instance.share(
+            ShareParams(files: [XFile(path)]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _importBackup(BuildContext context, WidgetRef ref) async {
+    final files = await ref.read(backupFilesProvider.future);
+    if (!context.mounted) return;
+
+    if (files.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Копий не найдено. Положите файл копии в папку приложения '
+            'или сначала сохраните её здесь же.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final path = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: const Text('Из какой копии восстановить?'),
+        children: [
+          for (final file in files)
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(dialogContext).pop(file),
+              child: Text(file.split('/').last),
+            ),
+        ],
+      ),
+    );
+    if (path == null || !context.mounted) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Восстановить из копии?'),
+        content: const Text(
+          'Текущие карты и категории будут заменены содержимым файла.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Отмена'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Восстановить'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final messenger = ScaffoldMessenger.of(context);
+    final ok = await ref.read(backupServiceProvider).importFromFile(path);
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(
+          ok
+              ? 'Данные восстановлены'
+              : 'Файл не похож на копию МегаКэша — ничего не изменилось',
         ),
       ),
     );
@@ -293,7 +386,6 @@ class _SettingsRow extends StatelessWidget {
     this.subtitle,
     this.onTap,
     this.danger = false,
-    this.enabled = true,
   });
 
   final IconData icon;
@@ -301,16 +393,17 @@ class _SettingsRow extends StatelessWidget {
   final String? subtitle;
   final VoidCallback? onTap;
   final bool danger;
-  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
     final fg = danger ? c.error : c.text;
     return Opacity(
-      opacity: enabled ? 1 : 0.45,
+      // Строка без действия гасится: недоступное должно выглядеть
+      // недоступным, а не молча не реагировать на нажатие.
+      opacity: onTap == null ? 0.45 : 1,
       child: InkWell(
-        onTap: enabled ? onTap : null,
+        onTap: onTap,
         child: Container(
           constraints: const BoxConstraints(minHeight: 56),
           color: c.surface,

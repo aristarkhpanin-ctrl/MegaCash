@@ -43,3 +43,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Боевой ключ подписи. В репозиторий не попадает никогда: с ним кто угодно
+# выпустит обновление приложения от вашего имени.
+android/key.properties
+*.jks
+*.keystore

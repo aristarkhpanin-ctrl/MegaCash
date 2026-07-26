@@ -1,0 +1,14 @@
+# Скопируйте в android/key.properties и заполните своими значениями.
+# Сам key.properties и файл хранилища в репозиторий не добавляются.
+#
+# Ключ создаётся один раз командой:
+#   keytool -genkey -v -keystore megacash-release.jks \
+#     -keyalg RSA -keysize 2048 -validity 10000 -alias megacash
+#
+# Потерять его нельзя: без него Google Play не примет обновление
+# приложения, и придётся публиковать новое, потеряв всех пользователей.
+
+storePassword=пароль_хранилища
+keyPassword=пароль_ключа
+keyAlias=megacash
+storeFile=megacash-release.jks

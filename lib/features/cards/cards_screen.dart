@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../ads/ad_banner_slot.dart';
 import '../../core/navigation/routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
@@ -13,7 +14,7 @@ import '../../domain/models/month_key.dart';
 /// А3 · Мои карты.
 ///
 /// Список карт с цветовыми метками, базовым процентом и количеством
-/// выбранных категорий. Снизу баннер (шаг 8).
+/// выбранных категорий. Снизу место под баннер.
 /// Состояния: пусто; список; список из десяти карт.
 class CardsScreen extends ConsumerWidget {
   const CardsScreen({super.key});
@@ -131,6 +132,7 @@ class CardsScreen extends ConsumerWidget {
                   },
                 ),
               ),
+            const AdBannerSlot(),
           ],
         ),
       ),

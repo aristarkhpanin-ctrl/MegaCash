@@ -37,6 +37,10 @@ dependencies:
   tesseract_ocr:
     path: packages/tesseract_ocr
   image_picker: ^1.1.2
+  # Версия 12, а не 13: тринадцатая тянет win32 несовместимой версии
+  # и не уживается с file_picker. Нам нужен только Android, но pub
+  # разрешает зависимости сразу под все платформы.
+  share_plus: ^12.0.2
 
 dev_dependencies:
   flutter_test:
