@@ -17,6 +17,7 @@ abstract final class IsarDatabase {
     SelectionEntitySchema,
     WeightEntitySchema,
     RecognitionLogEntitySchema,
+    AppSettingEntitySchema,
   ];
 
   /// Открывает базу в каталоге документов приложения.

@@ -31,10 +31,13 @@ final _cardsKey = GlobalKey<NavigatorState>(debugLabel: 'cards');
 /// [StatefulShellRoute] и сохраняют свой стек по отдельности. Всё остальное
 /// открывается поверх, на корневом навигаторе: ответ, месячная настройка,
 /// онбординг и настройки нижней навигации не показывают.
-GoRouter createRouter() {
+GoRouter createRouter({bool onboardingDone = true}) {
   return GoRouter(
     navigatorKey: _rootKey,
-    initialLocation: Routes.home,
+    // Первый запуск начинается с объяснения, а не с пустого главного
+    // экрана: человек не знает, что от него хотят и почему приложение
+    // просит скриншоты.
+    initialLocation: onboardingDone ? Routes.home : Routes.onboarding,
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

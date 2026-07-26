@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'core/navigation/app_router.dart';
+import 'features/onboarding/onboarding_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_mode_provider.dart';
 
-final routerProvider = Provider<GoRouter>((ref) => createRouter());
+final routerProvider = Provider<GoRouter>((ref) => createRouter(onboardingDone: ref.watch(onboardingDoneProvider)));
 
 class MegaCashApp extends ConsumerWidget {
   const MegaCashApp({super.key});

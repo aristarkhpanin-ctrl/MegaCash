@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants/known_banks.dart';
+import '../../core/navigation/routes.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_typography.dart';
@@ -400,7 +401,13 @@ class _FirstCardScreenState extends ConsumerState<FirstCardScreen> {
     // Список карт не пересобираем вручную: он живёт на потоке Isar и
     // обновится сам. Инвалидация прямо перед закрытием экрана роняла бы
     // обновление в середину сборки кадра перехода.
-    context.pop();
+    //
+    // Во время онбординга возвращаться некуда — уходим на главный.
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(Routes.home);
+    }
   }
 
   static double? _parseRate(String raw) {

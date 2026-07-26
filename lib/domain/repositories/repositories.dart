@@ -110,3 +110,22 @@ abstract interface class CategoryDictionary {
   /// на встроенной копии, если сеть недоступна.
   Future<void> refresh();
 }
+
+/// Настройки приложения.
+abstract interface class SettingsRepository {
+  Future<String?> get(String key);
+  Future<void> set(String key, String value);
+  Future<bool> getBool(String key, {bool orElse = false});
+  Future<void> setBool(String key, {required bool value});
+
+  /// Стирает все данные пользователя. Нужен в настройках: приложение
+  /// хранит всё на устройстве, и человек должен иметь возможность
+  /// это прекратить.
+  Future<void> clearEverything();
+}
+
+/// Ключи настроек в одном месте, чтобы не разъезжались по коду.
+abstract final class SettingKeys {
+  static const themeMode = 'theme_mode';
+  static const onboardingDone = 'onboarding_done';
+}

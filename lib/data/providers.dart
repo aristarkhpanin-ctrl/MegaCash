@@ -44,6 +44,10 @@ final recognitionLogRepositoryProvider = Provider<RecognitionLogRepository>(
   (ref) => IsarRecognitionLogRepository(ref.watch(isarProvider)),
 );
 
+final settingsRepositoryProvider = Provider<SettingsRepository>(
+  (ref) => IsarSettingsRepository(ref.watch(isarProvider)),
+);
+
 final categoryDictionaryProvider = Provider<CategoryDictionary>(
   (ref) => BundledCategoryDictionary(),
 );

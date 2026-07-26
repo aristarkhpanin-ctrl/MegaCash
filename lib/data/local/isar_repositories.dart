@@ -319,3 +319,51 @@ class IsarRecognitionLogRepository implements RecognitionLogRepository {
     await _isar.writeTxn(() => _isar.recognitionLogEntitys.clear());
   }
 }
+
+class IsarSettingsRepository implements SettingsRepository {
+  IsarSettingsRepository(this._isar);
+
+  final Isar _isar;
+
+  @override
+  Future<String?> get(String key) async {
+    final row = await _isar.appSettingEntitys.getByKey(key);
+    return row?.value;
+  }
+
+  @override
+  Future<void> set(String key, String value) async {
+    await _isar.writeTxn(
+      () => _isar.appSettingEntitys.put(
+        AppSettingEntity()
+          ..key = key
+          ..value = value,
+      ),
+    );
+  }
+
+  @override
+  Future<bool> getBool(String key, {bool orElse = false}) async {
+    final raw = await get(key);
+    if (raw == null) return orElse;
+    return raw == 'true';
+  }
+
+  @override
+  Future<void> setBool(String key, {required bool value}) =>
+      set(key, value ? 'true' : 'false');
+
+  /// Стирает всё, кроме самих настроек: человек просил убрать свои данные,
+  /// а не сбросить приложение к заводскому виду и заново смотреть онбординг.
+  @override
+  Future<void> clearEverything() async {
+    await _isar.writeTxn(() async {
+      await _isar.cardEntitys.clear();
+      await _isar.bankEntitys.clear();
+      await _isar.offerEntitys.clear();
+      await _isar.selectionEntitys.clear();
+      await _isar.weightEntitys.clear();
+      await _isar.recognitionLogEntitys.clear();
+    });
+  }
+}

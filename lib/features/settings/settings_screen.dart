@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,15 +9,14 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/theme_mode_provider.dart';
+import '../../data/providers.dart';
 
 /// Г1 · Настройки.
 ///
-/// Тема оформления, сохранение копии данных, восстановление из копии,
-/// сброс всех данных. Снизу баннер.
+/// Тема оформления, обновление справочника категорий, сброс всех данных
+/// и «О приложении».
 ///
-/// Шаг 1: работает только переключатель темы — им и проверяется, что обе
-/// темы собраны из токенов правильно. Резервное копирование и баннер
-/// появятся на шаге 8.
+/// Резервное копирование и баннер появятся на шаге 8.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -51,21 +52,21 @@ class SettingsScreen extends ConsumerWidget {
                     icon: Icons.light_mode_outlined,
                     label: 'Светлая',
                     selected: mode == ThemeMode.light,
-                    onTap: () => notifier.set(ThemeMode.light),
+                    onTap: () => unawaited(notifier.set(ThemeMode.light)),
                   ),
                   const SizedBox(width: Spacing.x1 + 2),
                   _ThemeOption(
                     icon: Icons.dark_mode_outlined,
                     label: 'Тёмная',
                     selected: mode == ThemeMode.dark,
-                    onTap: () => notifier.set(ThemeMode.dark),
+                    onTap: () => unawaited(notifier.set(ThemeMode.dark)),
                   ),
                   const SizedBox(width: Spacing.x1 + 2),
                   _ThemeOption(
                     icon: Icons.phone_android_outlined,
                     label: 'Системная',
                     selected: mode == ThemeMode.system,
-                    onTap: () => notifier.set(ThemeMode.system),
+                    onTap: () => unawaited(notifier.set(ThemeMode.system)),
                   ),
                 ],
               ),
@@ -92,6 +93,30 @@ class SettingsScreen extends ConsumerWidget {
             ),
 
             const SizedBox(height: Spacing.x6),
+            const _SectionLabel('Справочник категорий'),
+            const SizedBox(height: Spacing.x2 + 2),
+            _RowGroup(
+              children: [
+                _SettingsRow(
+                  icon: Icons.sync,
+                  title: 'Обновить справочник',
+                  subtitle: 'Добавит новые формулировки банков',
+                  onTap: () => _refreshDictionary(context, ref),
+                ),
+              ],
+            ),
+            const SizedBox(height: Spacing.x2 + 2),
+            Text(
+              'Единственное обращение к сети во всём приложении. Без него '
+              'МегаКэш работает так же, только не узнаёт новые названия '
+              'категорий.',
+              style: AppText.label.copyWith(
+                color: c.textSecondary,
+                height: 1.4,
+              ),
+            ),
+
+            const SizedBox(height: Spacing.x6),
             const _SectionLabel('Ещё'),
             const SizedBox(height: Spacing.x2 + 2),
             _RowGroup(
@@ -101,18 +126,18 @@ class SettingsScreen extends ConsumerWidget {
                   title: 'О приложении',
                   onTap: () => context.push(Routes.about),
                 ),
-                const _SettingsRow(
+                _SettingsRow(
                   icon: Icons.delete_outline,
                   title: 'Сбросить все данные',
                   danger: true,
-                  enabled: false,
+                  onTap: () => _confirmReset(context, ref),
                 ),
               ],
             ),
             const SizedBox(height: Spacing.x2 + 2),
             Text(
-              'Сброс удалит все карты и настройки без возможности '
-              'восстановить, если нет копии.',
+              'Сброс удалит все карты, предложения и выбранные категории. '
+              'Отменить это нельзя.',
               style: AppText.label.copyWith(
                 color: c.textSecondary,
                 height: 1.4,
@@ -122,6 +147,45 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _refreshDictionary(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
+    await ref.read(categoryDictionaryProvider).refresh();
+    messenger.showSnackBar(
+      const SnackBar(content: Text('Справочник обновлён')),
+    );
+  }
+
+  /// Стирание данных подтверждается отдельно: это единственное действие
+  /// в приложении, которое нельзя отменить.
+  Future<void> _confirmReset(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Сбросить все данные?'),
+        content: const Text(
+          'Удалятся все карты, предложения банков и выбранные категории. '
+          'Восстановить их будет нельзя.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Отмена'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Сбросить'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    await ref.read(settingsRepositoryProvider).clearEverything();
+    ref.invalidate(cardsProvider);
+    if (!context.mounted) return;
+    context.go(Routes.home);
   }
 }
 

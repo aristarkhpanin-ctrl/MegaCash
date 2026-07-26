@@ -13,6 +13,7 @@ import 'package:megacash/domain/models/category.dart';
 import 'package:megacash/features/cards/cards_screen.dart';
 import 'package:megacash/features/home/answer_screen.dart';
 import 'package:megacash/features/home/home_screen.dart';
+import 'package:megacash/features/onboarding/onboarding_provider.dart';
 import 'package:megacash/features/setup/manual_category_screen.dart';
 
 void main() {
@@ -114,6 +115,9 @@ void main() {
         overrides: [
           isarProvider.overrideWithValue(isar),
           categoriesProvider.overrideWithValue(categories),
+          // Онбординг проверяется отдельным тестом; остальные начинают
+          // с главного экрана, как при втором и любом следующем запуске.
+          onboardingDoneProvider.overrideWithValue(true),
         ],
         child: const MegaCashApp(),
       ),
@@ -171,6 +175,76 @@ void main() {
     await settle(tester);
     await settle(tester);
   }
+
+  testWidgets('Первый запуск начинается с онбординга', (tester) async {
+    tester.view.physicalSize = const Size(360, 780);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          isarProvider.overrideWithValue(isar),
+          categoriesProvider.overrideWithValue(categories),
+          onboardingDoneProvider.overrideWithValue(false),
+        ],
+        child: const MegaCashApp(),
+      ),
+    );
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
+    });
+    await settle(tester);
+
+    expect(find.text('МегаКэш'), findsOneWidget);
+    expect(find.text('Раз в месяц'), findsOneWidget);
+    expect(find.text('Каждый день'), findsOneWidget);
+
+    await tapAndWait(tester, find.text('Начать'));
+    expect(find.text('Доступ к скриншотам'), findsOneWidget);
+
+    await tapAndWait(tester, find.text('Понятно, добавить карту'));
+    expect(find.text('Выберите банк'), findsOneWidget);
+
+    // Первая карта заводится и уводит на главный: возвращаться некуда.
+    await tapAndWait(tester, find.text('Сбербанк'));
+    await tester.enterText(
+      find.widgetWithText(TextField, 'Например, Black'),
+      'СберКарта',
+    );
+    await settle(tester);
+    await tapAndWait(tester, find.text('Сохранить карту'));
+
+    await waitFor(tester, find.text('Кэшбэк'));
+    expect(find.text('Кэшбэк'), findsOneWidget);
+    expect(find.text('Карты'), findsOneWidget);
+  });
+
+  testWidgets('Тема переживает перезапуск приложения', (tester) async {
+    await pumpApp(tester);
+    await tapAndWait(tester, find.byTooltip('Настройки'));
+    await tapAndWait(tester, find.text('Тёмная'));
+
+    // Пересобираем приложение с нуля на той же базе — как после запуска.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          isarProvider.overrideWithValue(isar),
+          categoriesProvider.overrideWithValue(categories),
+          onboardingDoneProvider.overrideWithValue(true),
+        ],
+        child: const MegaCashApp(),
+      ),
+    );
+    await settle(tester);
+
+    final ctx = tester.element(find.byType(HomeScreen));
+    expect(Theme.of(ctx).scaffoldBackgroundColor, AppColors.dark.bg);
+  });
 
   testWidgets('Приложение открывается на главном экране', (tester) async {
     await pumpApp(tester);

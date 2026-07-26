@@ -188,3 +188,18 @@ class RecognitionLogEntity {
         ..foundCount = l.foundCount
         ..unmatchedStrings = l.unmatchedStrings;
 }
+
+/// Настройки приложения: тема, пройденный онбординг, версия справочника.
+///
+/// Отдельная коллекция «ключ — значение», а не файл рядом: настроек мало,
+/// и держать их там же, где остальные данные, значит не заводить второй
+/// механизм сохранения и второй путь к потере данных.
+@collection
+class AppSettingEntity {
+  Id id = Isar.autoIncrement;
+
+  @Index(unique: true, replace: true)
+  late String key;
+
+  late String value;
+}
