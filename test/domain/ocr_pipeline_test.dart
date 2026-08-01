@@ -268,6 +268,52 @@ void main() {
     });
   });
 
+  group('Мусор настоящего распознавания', () {
+    /// Всё это движок выдал на месте значков и логотипов при прогоне
+    /// на телефоне. В подписи такое выглядит как сбой приложения.
+    test('обрывки вместо значков в подписи не показываются', () {
+      for (final junk in const [
+        'SSse Ge: ee:',
+        '=E',
+        '©',
+        '5; @)',
+        r'$ all',
+        'оу,',
+      ]) {
+        final offers = parse('10% Перекрёсток Доставка\n$junk').offers;
+        expect(
+          offers.single.note,
+          isNull,
+          reason: 'подпись «$junk» — это мусор распознавания',
+        );
+      }
+    });
+
+    test('осмысленное условие подписью остаётся', () {
+      final offers = parse('5% Одежда и обувь\nЗарплатным клиентам').offers;
+      expect(offers.single.note, 'Зарплатным клиентам');
+    });
+
+    /// Банк переносит длинное название на вторую строку, и она приезжала
+    /// в подпись: «Электроника и бытовая» / «техника».
+    test('перенесённый хвост названия приклеивается обратно', () {
+      final wrapped = parse('5% Электроника и бытовая\nтехника').offers;
+      expect(wrapped.single.rawName, 'Электроника и бытовая техника');
+      expect(wrapped.single.note, isNull);
+
+      final parts = parse('5% Запчасти и\nаксессуары').offers;
+      expect(parts.single.rawName, 'Запчасти и аксессуары');
+    });
+
+    test('склеенное название находит категорию', () {
+      expect(
+        matcher.match('Электроника и бытовая техника').categoryId,
+        'electronics',
+      );
+      expect(matcher.match('Запчасти и аксессуары').categoryId, 'auto');
+    });
+  });
+
   group('Служба распознавания целиком', () {
     /// Критерий из техзадания: на тестовом наборе скриншотов распознаётся
     /// не меньше 80% строк с предложениями.
@@ -393,6 +439,23 @@ void main() {
       final weak =
           outcome.offers.firstWhere((o) => o.categoryId == 'supermarkets');
       expect(weak.needsReview, isTrue);
+    });
+
+    test('повторы магазинов между скриншотами не плодятся', () {
+      final outcome = service().fromPage(
+        page(
+          '15% Дикси Доставка\n10% Перекрёсток Доставка\n'
+          '15% Дикси Доставка\n10% Перекрёсток Доставка',
+        ),
+        cardId: 'card1',
+        monthKey: '2026-07',
+      );
+
+      expect(
+        outcome.unmatched.where((u) => u.rawName == 'Дикси Доставка'),
+        hasLength(1),
+      );
+      expect(outcome.unmatched, hasLength(2));
     });
 
     test('весь распознанный текст сохраняется для журнала', () {

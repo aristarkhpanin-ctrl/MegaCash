@@ -160,7 +160,7 @@ class SetupController extends Notifier<SetupState> {
 
     state = state.copyWith(
       offers: _dedupe(offers),
-      unmatched: unmatched,
+      unmatched: _dedupeUnmatched(unmatched),
       rawTexts: rawTexts,
       recognizing: false,
     );
@@ -179,6 +179,16 @@ class SetupController extends Notifier<SetupState> {
       }
     }
     return byKey.values.toList();
+  }
+
+  /// Скриншоты одной карты перекрываются: человек листает список и снимает
+  /// его по кускам. Одно и то же предложение приходит несколько раз.
+  static List<UnmatchedOffer> _dedupeUnmatched(List<UnmatchedOffer> items) {
+    final seen = <String>{};
+    return [
+      for (final item in items)
+        if (seen.add('${item.rawName}|${item.rate}')) item,
+    ];
   }
 
   Future<void> _saveLog() async {

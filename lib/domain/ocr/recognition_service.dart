@@ -100,13 +100,20 @@ class RecognitionService {
       );
 
       if (!match.isMatched) {
-        unmatched.add(
-          UnmatchedOffer(
-            rawName: offer.rawName,
-            rate: offer.rate,
-            note: offer.note,
-          ),
+        // Скриншоты одной карты перекрываются, и одно и то же предложение
+        // приходит дважды. В списке на разбор дубли только мешают.
+        final duplicate = unmatched.any(
+          (u) => u.rawName == offer.rawName && u.rate == offer.rate,
         );
+        if (!duplicate) {
+          unmatched.add(
+            UnmatchedOffer(
+              rawName: offer.rawName,
+              rate: offer.rate,
+              note: offer.note,
+            ),
+          );
+        }
         continue;
       }
 

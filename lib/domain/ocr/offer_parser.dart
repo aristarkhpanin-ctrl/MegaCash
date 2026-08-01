@@ -105,9 +105,20 @@ abstract final class OfferParser {
         continue;
       }
 
+      // Перенесённый хвост названия приклеиваем обратно.
+      var name = parsed.$2;
+      if (i + 1 < entries.length) {
+        final next = entries[i + 1];
+        if (next.parsed == null &&
+            !_isNoise(next.text) &&
+            _isNameTail(next.text)) {
+          name = '$name ${next.text}';
+        }
+      }
+
       offers.add(
         ParsedOffer(
-          rawName: parsed.$2,
+          rawName: name,
           rate: parsed.$1,
           note: _noteAfter(entries, i),
           lineConfidence: entry.confidence,
@@ -119,14 +130,42 @@ abstract final class OfferParser {
   }
 
   /// Подпись под предложением — ближайшая следующая строка, если она сама
-  /// не предложение и не служебная.
+  /// не предложение, не служебная и вообще похожа на текст.
   static String? _noteAfter(List<_Entry> entries, int index) {
     if (index + 1 >= entries.length) return null;
     final next = entries[index + 1];
     if (next.parsed != null) return null;
     if (_isNoise(next.text)) return null;
+    if (!_looksLikeText(next.text)) return null;
+    if (_isNameTail(next.text)) return null;
     return next.text;
   }
+
+  /// Продолжение названия, перенесённое на вторую строку.
+  ///
+  /// Банк переносит длинное название: «Электроника и бытовая» / «техника».
+  /// Хвост узнаётся по строчной букве в начале — настоящие условия
+  /// («Зарплатным клиентам», «Только в приложении») пишутся с заглавной.
+  static bool _isNameTail(String text) {
+    if (text.isEmpty || text.length > 24) return false;
+    if (text.contains(' ') && text.split(' ').length > 2) return false;
+    final first = text[0];
+    return first.toLowerCase() == first && first.toUpperCase() != first;
+  }
+
+  /// Отсекает мусор распознавания: «SSse Ge: ee:», «=E», «©», «5; @)».
+  ///
+  /// Такие строки движок выдаёт на месте значков и логотипов банков.
+  /// Признак настоящей подписи — русское слово хотя бы из четырёх букв:
+  /// все условия банков написаны по-русски, а мусор из значков выходит
+  /// латиницей и символами. Правило грубое, но ошибается в безопасную
+  /// сторону: потерянная подпись хуже не сделает, а мусор в интерфейсе
+  /// выглядит как сбой приложения.
+  static final RegExp _russianWord =
+      RegExp(r'[а-яё]{4,}', caseSensitive: false, unicode: true);
+
+  static bool _looksLikeText(String text) =>
+      _russianWord.hasMatch(text.trim());
 
   /// Делит строку, если распознавание склеило в неё несколько плиток.
   ///
