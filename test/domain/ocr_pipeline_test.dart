@@ -117,7 +117,7 @@ void main() {
       );
     });
 
-    test('на всех пяти экранах находится ожидаемое число предложений', () {
+    test('на первых пяти экранах находится ожидаемое число предложений', () {
       expect(parse(BankScreens.alfaFirst).offers, hasLength(11));
       expect(parse(BankScreens.alfaSecond).offers, hasLength(11));
       expect(parse(BankScreens.vtbFirst).offers, hasLength(6));
@@ -233,7 +233,7 @@ void main() {
     });
   });
 
-  group('Сквозной разбор всех пяти экранов', () {
+  group('Сквозной разбор всех экранов', () {
     test('сопоставленных категорий больше, чем несопоставленных, у Альфы',
         () {
       final offers = parse(BankScreens.alfaFirst).offers;
@@ -279,6 +279,13 @@ void main() {
         'ВТБ · экран 1': 6,
         'ВТБ · экран 2': 6,
         'Яндекс Пэй': 9,
+        'Сбербанк': 8,
+        'Ozon': 11,
+        // Скидка «−50% Еда и Деливери» предложением не является.
+        'Яндекс Пэй · август': 9,
+        'Экран в две колонки': 8,
+        'Т-Банк': 7,
+        'СберСпасибо': 8,
       };
 
       var found = 0;
@@ -288,7 +295,7 @@ void main() {
         total += expected[entry.key]!;
       }
 
-      expect(total, 43);
+      expect(total, 94);
       expect(
         found / total,
         greaterThanOrEqualTo(0.8),
@@ -396,6 +403,104 @@ void main() {
       );
       expect(outcome.rawText, contains('Зарплатным клиентам'));
       expect(outcome.rawText, contains('1% За все покупки'));
+    });
+  });
+
+  group('Второй набор скриншотов: Сбер, Ozon, Т-Банк, Яндекс', () {
+    test('дробный процент в начале строки', () {
+      final rates = ratesOf(BankScreens.sber);
+      expect(rates['На все покупки'], 0.5);
+      expect(rates['Супермаркеты'], 1.5);
+      expect(rates['Парфюмерия и косметика'], 5);
+    });
+
+    /// Скидка на доставку — не кэшбэк. Если пустить её в подбор,
+    /// оптимизатор займёт слот тем, что денег не возвращает вовсе.
+    test('скидка со знаком минус в предложения не попадает', () {
+      final offers = parse(BankScreens.yandexPayAugust).offers;
+      expect(
+        offers.where((o) => o.rawName.contains('Деливери')),
+        isEmpty,
+        reason: '«−50% Еда и Деливери» — это скидка, а не кэшбэк',
+      );
+      // Остальное на экране разобралось.
+      expect(offers.map((o) => o.rawName), contains('Кинопоиск'));
+      expect(offers.map((o) => o.rawName), contains('Все покупки'));
+    });
+
+    test('скидка отбрасывается и в обратном порядке написания', () {
+      // Здесь минус ушёл бы в конец названия, а процент прошёл бы
+      // как обычный.
+      expect(parse('Еда и Деливери −50%').offers, isEmpty);
+      expect(parse('Доставка -30%').offers, isEmpty);
+    });
+
+    test('сто процентов — допустимое предложение', () {
+      final rates = ratesOf(BankScreens.yandexPayAugust);
+      expect(rates['Свои Плюсы в S7'], 100);
+    });
+
+    /// На экранах в две колонки распознавание склеивает соседние плитки
+    /// в одну строку. Без деления половина экрана просто пропала бы.
+    test('строка с двумя предложениями делится надвое', () {
+      final rates = ratesOf(BankScreens.gridTwoColumns);
+
+      expect(rates['АЗС'], 5);
+      expect(rates['Книги'], 5);
+      expect(rates['Фастфуд'], 5);
+      expect(rates['Магазины одежды'], 5);
+      expect(rates['Транспорт'], 5);
+      expect(rates['Запчасти и аксессуары'], 5);
+      expect(rates['На все покупки'], 1);
+      expect(rates['Цветы'], 10);
+
+      expect(parse(BankScreens.gridTwoColumns).offers, hasLength(8));
+    });
+
+    test('двойной пробел после процента не мешает', () {
+      expect(ratesOf(BankScreens.ozon)['Tasty Coffee'], 50);
+    });
+
+    test('условие «только по кредитной карте» подхватывается', () {
+      final offers = parse(BankScreens.ozon).offers;
+      final supermarkets =
+          offers.firstWhere((o) => o.rawName == 'Супермаркеты');
+      expect(supermarkets.note, 'Только по кредитной карте');
+    });
+
+    test('свои названия Т-Банка находятся в справочнике', () {
+      String? idOf(String name) => matcher.match(name).categoryId;
+      expect(idOf('Топливо в Городе'), 'fuel');
+      expect(idOf('Шопинг в Городе'), 'clothes');
+      expect(idOf('Спорттовары'), 'sport');
+      expect(idOf('Искусство'), 'art');
+    });
+
+    test('названия СберСпасибо находятся в справочнике', () {
+      String? idOf(String name) => matcher.match(name).categoryId;
+      expect(idOf('Салоны красоты'), 'beauty');
+      expect(idOf('Хобби и развлечения'), 'entertainment');
+      expect(idOf('Товары для детей'), 'kids');
+      expect(idOf('Такси и каршеринг'), 'taxi');
+      expect(idOf('Парфюмерия и косметика'), 'beauty');
+    });
+
+    test('«Выбрано 0 из 4» и подписи подписки предложениями не считаются',
+        () {
+      for (final screen in [BankScreens.ozon, BankScreens.sberSpasibo]) {
+        final names = parse(screen).offers.map((o) => o.rawName);
+        expect(names, isNot(contains('Выбрано 0 из 4')));
+        expect(names.where((n) => n.contains('СберПрайм')), isEmpty);
+      }
+    });
+
+    test('на девяти экранах ничего не теряет процент', () {
+      for (final entry in BankScreens.all.entries) {
+        for (final offer in parse(entry.value).offers) {
+          expect(offer.rate, greaterThan(0), reason: entry.key);
+          expect(offer.rate, lessThanOrEqualTo(100), reason: entry.key);
+        }
+      }
     });
   });
 }

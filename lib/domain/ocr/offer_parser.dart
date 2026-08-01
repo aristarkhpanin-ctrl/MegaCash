@@ -74,6 +74,14 @@ abstract final class OfferParser {
   static const int _maxNameLength = 48;
   static const int _maxNameWords = 6;
 
+  /// Начало предложения внутри строки: процент и следом название.
+  static final RegExp _offerStart =
+      RegExp(r'(?<![\d,.\u2212-])(\d{1,3}(?:[.,]\d{1,2})?)\s*%');
+
+  /// Скидка, а не кэшбэк: «−50% Еда и Деливери». Это другой продукт,
+  /// в подбор категорий он попасть не должен.
+  static final RegExp _discount = RegExp(r'[\u2212-]\s*\d{1,3}\s*%');
+
   static ParseResult parse(OcrPage page) {
     final offers = <ParsedOffer>[];
     final ignored = <String>[];
@@ -82,9 +90,10 @@ abstract final class OfferParser {
     // предложения, а потом привязываем к ним подписи.
     final entries = <_Entry>[];
     for (final line in page.lines) {
-      final text = line.text.trim();
-      if (text.isEmpty) continue;
-      entries.add(_Entry(text, line.confidence, _tryParse(text)));
+      for (final text in _splitOffers(line.text.trim())) {
+        if (text.isEmpty) continue;
+        entries.add(_Entry(text, line.confidence, _tryParse(text)));
+      }
     }
 
     for (var i = 0; i < entries.length; i++) {
@@ -119,6 +128,28 @@ abstract final class OfferParser {
     return next.text;
   }
 
+  /// Делит строку, если распознавание склеило в неё несколько плиток.
+  ///
+  /// На экранах в две колонки соседние предложения оказываются в одной
+  /// строке: «5% АЗС 5% Книги». Без деления получилось бы одно
+  /// предложение с мусорным названием — и половина экрана пропала бы.
+  static List<String> _splitOffers(String line) {
+    final starts = _offerStart.allMatches(line).map((m) => m.start).toList();
+    if (starts.length < 2) return [line];
+
+    final parts = <String>[];
+    for (var i = 0; i < starts.length; i++) {
+      final end = i + 1 < starts.length ? starts[i + 1] : line.length;
+      parts.add(line.substring(starts[i], end).trim());
+    }
+
+    // Текст до первого процента — обычно хвост подписи, он не теряется.
+    final head = line.substring(0, starts.first).trim();
+    if (head.isNotEmpty) parts.insert(0, head);
+
+    return parts;
+  }
+
   static bool _isNoise(String text) {
     final lower = text.toLowerCase().replaceAll('ё', 'е').trim();
     if (_clock.hasMatch(lower)) return true;
@@ -150,6 +181,11 @@ abstract final class OfferParser {
     }
 
     if (name == null || rateText == null) return null;
+
+    // Скидка, а не кэшбэк: «−50% Еда и Деливери». В обратном порядке
+    // написания минус попал бы в конец названия, а процент прошёл бы
+    // как обычный — и слот занял бы то, что денег не возвращает.
+    if (_discount.hasMatch(normalized)) return null;
 
     final rate = double.tryParse(rateText.replaceAll(',', '.'));
     if (rate == null || rate <= 0 || rate > 100) return null;
