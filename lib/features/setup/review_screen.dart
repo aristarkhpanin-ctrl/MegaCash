@@ -8,6 +8,9 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/utils/formatters.dart';
 import '../../data/providers.dart';
+import '../../domain/models/category.dart';
+import '../../domain/ocr/recognition_service.dart';
+import 'category_picker.dart';
 import 'setup_controller.dart';
 
 /// Б4 · Проверка распознанного.
@@ -111,8 +114,8 @@ class ReviewScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: Spacing.x1 + 2),
                     Text(
-                      'Обычно это магазины и сервисы. Укажите категорию '
-                      'сами или пропустите.',
+                      'Обычно это магазины и сервисы. Нажмите на строку, '
+                      'чтобы выбрать категорию, или уберите её крестиком.',
                       style: AppText.label.copyWith(
                         color: c.textSecondary,
                         height: 1.4,
@@ -124,9 +127,10 @@ class ReviewScreen extends ConsumerWidget {
                         title: item.rawName,
                         subtitle: item.note,
                         rate: item.rate,
+                        onAssign: () => _assign(context, ref, categories, item),
                         onDrop: () => ref
                             .read(setupControllerProvider.notifier)
-                            .dismissUnmatched(item.rawName),
+                            .dismissUnmatched(item),
                       ),
                       const SizedBox(height: Spacing.x2),
                     ],
@@ -173,6 +177,35 @@ class ReviewScreen extends ConsumerWidget {
       ),
     );
   }
+
+  /// Относит несопоставленную строку к категории, выбранной человеком.
+  ///
+  /// Процент и условие берутся из распознанного: человек указывает только
+  /// то, чего приложение не знает, — куда отнести «РИВ ГОШ». Категория
+  /// принадлежит карте, поэтому карту берём ту, на скриншоте которой
+  /// строка встретилась.
+  static Future<void> _assign(
+    BuildContext context,
+    WidgetRef ref,
+    List<Category> categories,
+    UnmatchedOffer item,
+  ) async {
+    final picked = await showCategoryPicker(
+      context,
+      categories: categories,
+      title: '${Percent.format(item.rate)} · ${item.rawName}',
+    );
+    if (picked == null) return;
+
+    ref.read(setupControllerProvider.notifier)
+      ..addManualOffer(
+        cardId: item.cardId,
+        categoryId: picked.id,
+        rate: item.rate,
+        note: item.note,
+      )
+      ..dismissUnmatched(item);
+  }
 }
 
 class _Row extends StatelessWidget {
@@ -182,6 +215,7 @@ class _Row extends StatelessWidget {
     required this.onDrop,
     this.subtitle,
     this.onAccept,
+    this.onAssign,
   });
 
   final String title;
@@ -190,10 +224,13 @@ class _Row extends StatelessWidget {
   final VoidCallback onDrop;
   final VoidCallback? onAccept;
 
+  /// Выбор категории для строки, которой в справочнике не нашлось.
+  final VoidCallback? onAssign;
+
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    return Container(
+    final content = Container(
       padding: const EdgeInsets.only(
         left: Spacing.x3 + 2,
         top: Spacing.x2,
@@ -237,6 +274,13 @@ class _Row extends StatelessWidget {
               onPressed: accept,
               icon: Icon(Icons.check, size: 18, color: c.success),
             ),
+          if (onAssign case final assign?)
+            IconButton(
+              tooltip: 'Выбрать категорию',
+              onPressed: assign,
+              // Жёлтый в этом приложении — только заливка, никогда не значок.
+              icon: Icon(Icons.playlist_add, size: 20, color: c.text),
+            ),
           IconButton(
             tooltip: 'Убрать',
             onPressed: onDrop,
@@ -244,6 +288,16 @@ class _Row extends StatelessWidget {
           ),
         ],
       ),
+    );
+
+    if (onAssign == null) return content;
+
+    // Нажатие на всю строку, а не только на значок: разбирать двадцать
+    // магазинов, целясь в двадцатипиксельную кнопку, невыносимо.
+    return InkWell(
+      onTap: onAssign,
+      borderRadius: Radii.cardBorder,
+      child: content,
     );
   }
 }

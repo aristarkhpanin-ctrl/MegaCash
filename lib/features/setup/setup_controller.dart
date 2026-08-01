@@ -187,7 +187,7 @@ class SetupController extends Notifier<SetupState> {
     final seen = <String>{};
     return [
       for (final item in items)
-        if (seen.add('${item.rawName}|${item.rate}')) item,
+        if (seen.add(item.key)) item,
     ];
   }
 
@@ -254,10 +254,11 @@ class SetupController extends Notifier<SetupState> {
     );
   }
 
-  /// Убирает несопоставленную строку из списка на разбор.
-  void dismissUnmatched(String rawName) {
+  /// Убирает несопоставленную строку из списка на разбор — разобранную
+  /// или ненужную.
+  void dismissUnmatched(UnmatchedOffer item) {
     state = state.copyWith(
-      unmatched: state.unmatched.where((u) => u.rawName != rawName).toList(),
+      unmatched: state.unmatched.where((u) => u.key != item.key).toList(),
     );
   }
 

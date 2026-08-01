@@ -15,12 +15,25 @@ class UnmatchedOffer {
   const UnmatchedOffer({
     required this.rawName,
     required this.rate,
+    required this.cardId,
     this.note,
   });
 
   final String rawName;
   final double rate;
+
+  /// Карта, на скриншоте которой встретилась строка. Без неё предложение
+  /// потом некуда положить: категория принадлежит карте, а не вообще.
+  final String cardId;
+
   final String? note;
+
+  /// Чем одна несопоставленная строка отличается от другой.
+  ///
+  /// Карта входит в ключ: «5% Lamoda» встречается и у Т-Банка, и у Альфы —
+  /// это два разных предложения, и склеить их значило бы отнять у человека
+  /// одно из них.
+  String get key => '$cardId|$rawName|$rate';
 }
 
 /// Результат распознавания одной карты.
@@ -110,6 +123,7 @@ class RecognitionService {
             UnmatchedOffer(
               rawName: offer.rawName,
               rate: offer.rate,
+              cardId: cardId,
               note: offer.note,
             ),
           );
